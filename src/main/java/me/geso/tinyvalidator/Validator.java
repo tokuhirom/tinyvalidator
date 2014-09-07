@@ -1,17 +1,20 @@
 package me.geso.tinyvalidator;
 
 import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import me.geso.tinyvalidator.constraints.NotNull;
 import me.geso.tinyvalidator.constraints.Pattern;
@@ -25,6 +28,7 @@ import org.slf4j.LoggerFactory;
 public class Validator {
 	private static Logger logger = LoggerFactory.getLogger(Validator.class);
 	private Map<Class<? extends Annotation>, Rule> rules;
+	private static Map<Class<?>, PropertyDescriptor[]> propertyDescriptorsCache = new ConcurrentHashMap<>();
 
 	public Validator() {
 		this.rules = new HashMap<>();
@@ -104,15 +108,7 @@ public class Validator {
 
 			// Validate by properties.
 			{
-				BeanInfo beanInfo = Introspector.getBeanInfo(target.getClass());
-				PropertyDescriptor[] propertyDescriptors = beanInfo
-						.getPropertyDescriptors();
-				for (PropertyDescriptor descriptor : propertyDescriptors) {
-					if ("classLoader".equals(descriptor.getName())
-							|| "class".equals(descriptor.getName())) {
-						continue;
-					}
-
+				for (PropertyDescriptor descriptor : this.getPropertyDescriptors(target)) {
 					if (logger.isDebugEnabled()) {
 						logger.debug(
 								"Checking root: {}, target: {} descriptor: {}",
@@ -162,6 +158,25 @@ public class Validator {
 						field.getName(), annotations, fieldValue);
 			}
 		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private PropertyDescriptor[] getPropertyDescriptors(Object bean) {
+		try {
+			PropertyDescriptor[] propertyDescriptors = propertyDescriptorsCache.get(bean.getClass());
+			if (propertyDescriptors == null) {
+				BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
+				propertyDescriptors = Arrays
+						.stream(beanInfo
+								.getPropertyDescriptors())
+						.filter(it -> !("class".equals(it.getName()) || "classLoader"
+								.equals(it.getName())))
+						.toArray(PropertyDescriptor[]::new);
+				propertyDescriptorsCache.put(bean.getClass(), propertyDescriptors);
+			}
+			return propertyDescriptors;
+		} catch (IntrospectionException e) {
 			throw new RuntimeException(e);
 		}
 	}
