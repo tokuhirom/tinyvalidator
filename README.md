@@ -4,12 +4,13 @@ This is a tiny validation library for Java.
 
 ## SYNOPSIS
 
-  Validator validator = new Validator();
-  List<Violation<Foo>> violations = validator.validate(foo);
-  DefaultMessageGenerator generator = new DefaultMessageGenerator();
-  String msg = violations.stream()
-    .map(it -> generator.generateMessage(it))
-    .collect(Collectors.joining(","));
+    Validator validator = new Validator();
+    List<Violation<Foo>> violations = validator.validate(foo);
+    DefaultMessageGenerator generator = new DefaultMessageGenerator();
+    String msg = violations.stream()
+      .map(it -> generator.generateMessage(it))
+      .collect(Collectors.joining(","));
+
 
 ## MOTIVATION
 
