@@ -11,6 +11,14 @@ This is a tiny validation library for Java.
       .map(it -> generator.generateMessage(it))
       .collect(Collectors.joining(","));
 
+Bean definition:
+
+    @Data
+    public static class Foo {
+      @Pattern(regexp = "\\A[0-9]+\\z")
+      private String bar;
+    }
+
 ## HOW DO I IMPLEMENT MY OWN RULE?
 
  1. Implement annotation
