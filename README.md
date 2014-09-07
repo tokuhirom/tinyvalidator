@@ -11,6 +11,12 @@ This is a tiny validation library for Java.
       .map(it -> generator.generateMessage(it))
       .collect(Collectors.joining(","));
 
+## HOW DO I IMPLEMENT MY OWN RULE?
+
+ 1. Implement annotation
+ 2. Implement rule
+ 3. Implement message generator
+ 4. Register these objects!
 
 ## MOTIVATION
 

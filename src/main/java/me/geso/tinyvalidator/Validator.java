@@ -28,10 +28,14 @@ public class Validator {
 
 	public Validator() {
 		this.rules = new HashMap<>();
+		this.registerDefaultRules();
+	}
+	
+	private void registerDefaultRules() {
 		this.rules.put(Pattern.class, new PatternRule());
 		this.rules.put(Size.class, new SizeRule());
 	}
-	
+
 	/**
 	 * Add new rule for validator.
 	 * 

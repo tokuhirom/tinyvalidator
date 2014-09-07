@@ -1,11 +1,26 @@
 package me.geso.tinyvalidator;
 
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
+
 import me.geso.tinyvalidator.constraints.NotNull;
 import me.geso.tinyvalidator.constraints.Pattern;
 import me.geso.tinyvalidator.constraints.Size;
 
 public class DefaultMessageGenerator implements MessageGenerator {
+	private final Map<Class<? extends Annotation>, MessageGenerator> generators = new HashMap<>();
+	
+	public void addMessageGenerator(Class<? extends Annotation> annotationClass, MessageGenerator messageGenerator) {
+		this.generators.put(annotationClass, messageGenerator);
+	}
+
 	public <T> String generateMessage(Violation<T> violation) {
+		if (generators.containsKey(violation.getAnnotation().annotationType())) {
+			MessageGenerator messageGenerator = generators.get(violation.getAnnotation().annotationType());
+			return messageGenerator.generateMessage(violation);
+		}
+
 		if (violation.getAnnotation().annotationType() == NotNull.class) {
 			return String.format("You should fill %s.", violation.getRoutePath("."));
 		} else if (violation.getAnnotation().annotationType() == Pattern.class) {
