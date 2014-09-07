@@ -29,6 +29,7 @@ public class ValidatorTest {
 		Validator validator = new Validator();
 		List<Violation<Foo>> violations = validator.validate(foo);
 		assertFalse(violations.isEmpty());
+		assertEquals(1, violations.size());
 		MessageGenerator msggen = new DefaultMessageGenerator();
 		String msg = violations.stream().map(violation -> msggen.generateMessage(violation)).collect(Collectors.joining(":::"));
 		assertEquals("You should fill bar.", msg);

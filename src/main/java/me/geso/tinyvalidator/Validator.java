@@ -1,5 +1,7 @@
 package me.geso.tinyvalidator;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -17,8 +19,6 @@ import me.geso.tinyvalidator.constraints.Size;
 import me.geso.tinyvalidator.rules.PatternRule;
 import me.geso.tinyvalidator.rules.SizeRule;
 
-import org.apache.commons.beanutils.BeanUtilsBean;
-import org.apache.commons.beanutils.MethodUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,7 @@ public class Validator {
 		this.rules = new HashMap<>();
 		this.registerDefaultRules();
 	}
-	
+
 	private void registerDefaultRules() {
 		this.rules.put(Pattern.class, new PatternRule());
 		this.rules.put(Size.class, new SizeRule());
@@ -104,9 +104,9 @@ public class Validator {
 
 			// Validate by properties.
 			{
-				PropertyDescriptor[] propertyDescriptors = BeanUtilsBean
-						.getInstance().getPropertyUtils()
-						.getPropertyDescriptors(target);
+				BeanInfo beanInfo = Introspector.getBeanInfo(target.getClass());
+				PropertyDescriptor[] propertyDescriptors = beanInfo
+						.getPropertyDescriptors();
 				for (PropertyDescriptor descriptor : propertyDescriptors) {
 					if ("classLoader".equals(descriptor.getName())
 							|| "class".equals(descriptor.getName())) {
@@ -119,8 +119,9 @@ public class Validator {
 								root.getClass(), target.getClass(),
 								descriptor.getName());
 					}
-					Method getter = MethodUtils.getAccessibleMethod(
-							target.getClass(), descriptor.getReadMethod());
+
+					Method getter = descriptor.getReadMethod();
+					getter.setAccessible(true);
 					Object fieldValue = null;
 					if (getter != null) {
 						fieldValue = getter.invoke(target);
@@ -171,18 +172,21 @@ public class Validator {
 			Object fieldValue) {
 		for (Annotation annotation : annotations) {
 			if (annotation instanceof NotNull) {
-				List<String> currentRoute = new ArrayList<>(route);
-				currentRoute.add(name);
-				violations.add(new Violation<T>(root, target,
-						annotation,
-						currentRoute));
+				if (fieldValue == null) {
+					List<String> currentRoute = new ArrayList<>(route);
+					currentRoute.add(name);
+					violations.add(new Violation<T>(root, target,
+							annotation,
+							currentRoute));
+				}
 			}
 		}
 
 		for (Annotation annotation : annotations) {
 			Rule rule = rules.get(annotation.annotationType());
 			if (rule != null) {
-				if (!rule.validate(root, target, route, name, annotation, fieldValue)) {
+				if (!rule.validate(root, target, route, name, annotation,
+						fieldValue)) {
 					List<String> currentRoute = new ArrayList<>(route);
 					currentRoute.add(name);
 					violations.add(new Violation<T>(root, target,
