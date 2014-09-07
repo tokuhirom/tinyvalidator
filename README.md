@@ -26,6 +26,10 @@ Bean definition:
  3. Implement message generator
  4. Register these objects!
 
+## RULES
+
+TBD
+
 ## MOTIVATION
 
 I want to use tiny and thin validation library.
