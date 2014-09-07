@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.geso</groupId>
 	<artifactId>tinyvalidator</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>tinyvalidator</name>
 	<description>tinyvalidator</description>
 
@@ -12,6 +12,23 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
+
+	<distributionManagement>
+		<repository>
+			<id>repo</id>
+			<url>https://github.com/tokuhirom/maven/raw/master/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshot-repo</id>
+			<url>https://github.com/tokuhirom/maven/raw/master/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<scm>
+		<url>https://github.com/tokuhirom/tinyvalidator/</url>
+		<connection>scm:git:git://github.com/tokuhirom/tinyvalidator.git</connection>
+		<developerConnection>scm:git:git@github.com:tokuhirom/tinyvalidator.git</developerConnection>
+	</scm>
 
 	<repositories>
 		<repository>
