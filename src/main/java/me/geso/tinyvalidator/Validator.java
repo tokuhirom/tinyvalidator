@@ -81,22 +81,10 @@ public class Validator {
 						"Target class is a ClassLoader object... Just be ignored.");
 			}
 			return;
-		} else if (target instanceof Number) {
+		} else if (target.getClass().getPackage().getName().startsWith("java.")) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(
-						"Target class is a Number object... Just be ignored.");
-			}
-			return;
-		} else if (target instanceof Boolean) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(
-						"Target class is a Boolean object... Just be ignored.");
-			}
-			return;
-		} else if (target instanceof String) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(
-						"Target class is a String object... Just be ignored.");
+						"Target class is a built-in object '{}'... Just be ignored.", target.getClass());
 			}
 			return;
 		}
@@ -129,17 +117,13 @@ public class Validator {
 							|| "classLoader".equals(descriptor.getName())) {
 						continue;
 					}
-					if (descriptor.getReadMethod().getAnnotations().length > 0) {
-						accessorList.add(new PropertyAccessor(descriptor));
-					}
+					accessorList.add(new PropertyAccessor(descriptor));
 				}
 			} catch (IntrospectionException e) {
 				throw new RuntimeException(e);
 			}
 			for (Field field : bean.getClass().getDeclaredFields()) {
-				if (field.getAnnotations().length > 0) {
-					accessorList.add(new FieldAccessor(field));
-				}
+				accessorList.add(new FieldAccessor(field));
 			}
 			accessors = accessorList.toArray(new Accessor[0]);
 			accessorCache.put(bean.getClass(), accessors);
