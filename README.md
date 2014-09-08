@@ -19,7 +19,7 @@ Bean definition:
       private String bar;
     }
 
-## Validation rules
+## Constraints
 
 ### `@NotNull`
 
@@ -69,13 +69,11 @@ If you are using slf4j-simple, please try following VM options.
  3. Implement message generator
  4. Register these objects!
 
-## RULES
-
-TBD
-
 ## MOTIVATION
 
 I want to use tiny and thin validation library.
+
+I know JSR 303. Ofcource. But I need really *tiny* and *thin* library.
 
 ## AUTHOR
 
