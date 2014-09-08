@@ -38,7 +38,6 @@ public class NestedTest {
 
 	@Data
 	public static class Foo {
-		@NotNull
 		private Bar bar;
 	}
 
