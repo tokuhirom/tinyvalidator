@@ -69,19 +69,7 @@ public class Validator {
 			logger.debug(
 					"Checking {}", target.getClass());
 		}
-		if (target instanceof Class) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(
-						"Target class is a Class object... Just be ignored.");
-			}
-			return;
-		} else if (target instanceof ClassLoader) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(
-						"Target class is a ClassLoader object... Just be ignored.");
-			}
-			return;
-		} else if (target.getClass().getPackage().getName().startsWith("java.")) {
+		if (target.getClass().getPackage().getName().startsWith("java.")) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(
 						"Target class is a built-in object '{}'... Just be ignored.", target.getClass());
