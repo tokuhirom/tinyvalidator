@@ -10,15 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import me.geso.tinyvalidator.constraints.NotNull;
 
-@Slf4j
 public class NestedTest {
-	@Before
-	public void before() {
-		System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug");
-	}
 
 	@Test
 	public void testSuccess() {
