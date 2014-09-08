@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Data;
+import lombok.ToString;
 import me.geso.tinyvalidator.DefaultMessageGenerator;
 import me.geso.tinyvalidator.Validator;
 import me.geso.tinyvalidator.ConstraintViolation;
@@ -38,7 +39,7 @@ public class SizeRuleTest {
 		List<ConstraintViolation<StringFoo>> violations = new Validator().validate(stringFoo);
 		DefaultMessageGenerator gen = new DefaultMessageGenerator();
 		String msg = violations.stream().map(it -> gen.generateMessage(it)).collect(Collectors.joining(","));
-		assertEquals("bar: 2 < SizeRuleTest.StringFoo(bar=hogeeeee) < 5", msg);
+		assertEquals("bar size must be between 2 and 5. But SizeRuleTest.StringFoo(bar=hogeeeee).", msg);
 		assertTrue(!violations.isEmpty());
 	}
 
@@ -51,11 +52,12 @@ public class SizeRuleTest {
 		List<ConstraintViolation<StringFoo>> violations = new Validator().validate(stringFoo);
 		DefaultMessageGenerator gen = new DefaultMessageGenerator();
 		String msg = violations.stream().map(it -> gen.generateMessage(it)).collect(Collectors.joining(","));
-		assertEquals("bar: 2 < SizeRuleTest.StringFoo(bar=h) < 5", msg);
+		assertEquals("bar size must be between 2 and 5. But SizeRuleTest.StringFoo(bar=h).", msg);
 		assertTrue(!violations.isEmpty());
 	}
 	
 	@Data
+	@ToString
 	public static class StringFoo {
 		@Size(min=2, max=5)
 		private String bar;

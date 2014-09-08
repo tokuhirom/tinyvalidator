@@ -39,9 +39,9 @@ public class DefaultMessageGenerator implements MessageGenerator {
 					violation.getRoutePath("."), pattern.regexp());
 		} else if (violation.getAnnotation().annotationType() == Size.class) {
 			Size size = (Size) violation.getAnnotation();
-			return String.format("%s size must be between %d and %d. But %d.",
+			return String.format("%s size must be between %d and %d. But %s.",
 					violation.getRoutePath("."), size.min(), size.max(),
-					violation.getFieldValue());
+					violation.getFieldValue().toString());
 		} else {
 			throw new RuntimeException("Unknown message type: "
 					+ violation.getAnnotation());

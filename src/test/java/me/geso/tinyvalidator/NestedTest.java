@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import lombok.Data;
+import lombok.ToString;
 import me.geso.tinyvalidator.constraints.NotNull;
 
 import org.junit.Test;
@@ -37,11 +38,13 @@ public class NestedTest {
 	}
 
 	@Data
+	@ToString
 	public static class Foo {
 		private Bar bar;
 	}
 
 	@Data
+	@ToString
 	public static class Bar {
 		@NotNull
 		private String x;

@@ -35,7 +35,7 @@ public class ValidatorTestWithLombok {
 		assertFalse(violations.isEmpty());
 		MessageGenerator msggen = new DefaultMessageGenerator();
 		String msg = violations.stream().map(violation -> msggen.generateMessage(violation)).collect(Collectors.joining(":::"));
-		assertEquals("You should fill bar.", msg);
+		assertEquals("bar may not be null.", msg);
 	}
 
 	@Test
@@ -49,7 +49,7 @@ public class ValidatorTestWithLombok {
 		assertFalse(violations.isEmpty());
 		MessageGenerator msggen = new DefaultMessageGenerator();
 		String msg = violations.stream().map(violation -> msggen.generateMessage(violation)).collect(Collectors.joining(":::"));
-		assertEquals("You should fill bar.:::You should fill baz.", msg);
+		assertEquals("bar may not be null.:::baz may not be null.", msg);
 	}
 
 	@Data

@@ -32,7 +32,7 @@ public class ValidatorTest {
 		assertEquals(1, violations.size());
 		MessageGenerator msggen = new DefaultMessageGenerator();
 		String msg = violations.stream().map(violation -> msggen.generateMessage(violation)).collect(Collectors.joining(":::"));
-		assertEquals("You should fill bar.", msg);
+		assertEquals("bar may not be null.", msg);
 	}
 
 	@Test
@@ -43,7 +43,7 @@ public class ValidatorTest {
 		assertFalse(violations.isEmpty());
 		MessageGenerator msggen = new DefaultMessageGenerator();
 		String msg = violations.stream().map(violation -> msggen.generateMessage(violation)).collect(Collectors.joining(":::"));
-		assertEquals("You should fill bar.:::You should fill baz.", msg);
+		assertEquals("bar may not be null.:::baz may not be null.", msg);
 	}
 
 	public static class Foo {

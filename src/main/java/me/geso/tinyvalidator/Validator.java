@@ -5,12 +5,12 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 public class Validator {
 	private static Logger logger = LoggerFactory.getLogger(Validator.class);
 	private Map<Class<? extends Annotation>, Rule> rules;
-	private static Map<Class<?>, Accessor[]> accessorCache = new ConcurrentHashMap<>();
+	private static Map<Class<?>, PropertyAccessor[]> accessorCache = new ConcurrentHashMap<>();
 
 	public Validator() {
 		this.rules = new HashMap<>();
@@ -72,15 +72,16 @@ public class Validator {
 		if (target.getClass().getPackage().getName().startsWith("java.")) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(
-						"Target class is a built-in object '{}'... Just be ignored.", target.getClass());
+						"Target class is a built-in object '{}'... Just be ignored.",
+						target.getClass());
 			}
 			return;
 		}
 
 		seen.add(target);
 
-		Accessor[] accessors = this.getAccessors(target);
-		for (Accessor accessor : accessors) {
+		PropertyAccessor[] accessors = this.getAccessors(target);
+		for (PropertyAccessor accessor : accessors) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(
 						"Checking root: {}, target: {} descriptor: {}",
@@ -93,10 +94,10 @@ public class Validator {
 		}
 	}
 
-	private Accessor[] getAccessors(Object bean) {
-		Accessor[] accessors = accessorCache.get(bean.getClass());
+	private PropertyAccessor[] getAccessors(Object bean) {
+		PropertyAccessor[] accessors = accessorCache.get(bean.getClass());
 		if (accessors == null) {
-			List<Accessor> accessorList = new ArrayList<>();
+			List<PropertyAccessor> accessorList = new ArrayList<>();
 			try {
 				BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
 				for (PropertyDescriptor descriptor : beanInfo
@@ -105,15 +106,12 @@ public class Validator {
 							|| "classLoader".equals(descriptor.getName())) {
 						continue;
 					}
-					accessorList.add(new PropertyAccessor(descriptor));
+					accessorList.add(new PropertyAccessor(bean, descriptor));
 				}
 			} catch (IntrospectionException e) {
 				throw new RuntimeException(e);
 			}
-			for (Field field : bean.getClass().getDeclaredFields()) {
-				accessorList.add(new FieldAccessor(field));
-			}
-			accessors = accessorList.toArray(new Accessor[0]);
+			accessors = accessorList.stream().toArray(PropertyAccessor[]::new);
 			accessorCache.put(bean.getClass(), accessors);
 		}
 		return accessors;
@@ -121,17 +119,21 @@ public class Validator {
 
 	private <T> void validateField(T root, Object target,
 			List<ConstraintViolation<T>> violations, List<String> route,
-			Set<Object> seen, Accessor accessor) {
+			Set<Object> seen, PropertyAccessor accessor) {
 		String name = accessor.getName();
 		Object fieldValue = accessor.get(target);
 
-		NotNull notNullAnnotation = accessor.getAnnotation(NotNull.class);
-		if (notNullAnnotation != null) {
+		Optional<NotNull> notNullAnnotation = accessor.getNotNullAnnotation();
+		if (logger.isDebugEnabled()) {
+			logger.debug("{}.{}'s notNullAnnotation: {}", route, accessor.getName(), notNullAnnotation);
+		}
+		if (notNullAnnotation.isPresent()) {
 			if (fieldValue == null) {
+				logger.debug("{} is null", route);
 				List<String> currentRoute = new ArrayList<>(route);
 				currentRoute.add(name);
 				violations.add(new ConstraintViolation<T>(root, target,
-						notNullAnnotation,
+						notNullAnnotation.get(),
 						currentRoute));
 				return;
 			}

@@ -33,7 +33,7 @@ public class PatternRuleTest {
 		assertFalse(violations.isEmpty());
 		DefaultMessageGenerator gen = new DefaultMessageGenerator();
 		String msg = violations.stream().map(it -> gen.generateMessage(it)).collect(Collectors.joining(","));
-		assertEquals("bar does not matches \\A[0-9]+\\z.", msg);
+		assertEquals("bar must match \\A[0-9]+\\z.", msg);
 	}
 
 	@Data
