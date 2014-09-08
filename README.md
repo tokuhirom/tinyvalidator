@@ -19,12 +19,46 @@ Bean definition:
       private String bar;
     }
 
+## Validation rules
+
+### `@NotNull`
+
+    @Data
+    public static class Foo {
+      @NotNull
+      private String bar;
+    }
+
+bar should not be null.
+
+### `@Size`
+
+    @Data
+    public static class Foo {
+      @Size(min=2, max=5)
+      private String bar;
+    }
+
+`bar` should be grater than or equals 2, less than or equals 5.
+
+min's default value is 0, max's default value is `Integer.MAX_VALUE`.
+
+### `@Pattern`
+
+    @Data
+    public static class Foo {
+      @Pattern(regexp="\\A[0-9]+\z")
+      private String bar;
+    }
+
+`bar` should match the regular rexpression.
+
 ## HOW DO I IMPLEMENT MY OWN RULE?
 
  1. Implement annotation
  2. Implement rule
  3. Implement message generator
- 4. Register these objects!
+ 4. Register these objects!
 
 ## RULES
 
