@@ -4,13 +4,13 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Violation<T> {
+public class ConstraintViolation<T> {
 	private final T object;
 	private final Annotation annotation;
 	private final List<String> route;
 	private final Object fieldValue;
 
-	public Violation(T object, Object fieldValue, Annotation annotation, List<String> route) {
+	public ConstraintViolation(T object, Object fieldValue, Annotation annotation, List<String> route) {
 		this.object = object;
 		this.fieldValue = fieldValue;
 		this.annotation = annotation;

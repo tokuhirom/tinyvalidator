@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import lombok.Data;
 import me.geso.tinyvalidator.DefaultMessageGenerator;
 import me.geso.tinyvalidator.Validator;
-import me.geso.tinyvalidator.Violation;
+import me.geso.tinyvalidator.ConstraintViolation;
 import me.geso.tinyvalidator.constraints.Size;
 
 import org.junit.Test;
@@ -22,7 +22,7 @@ public class SizeRuleTest {
 	public void testTrueString() {
 		StringFoo stringFoo = new StringFoo();
 		stringFoo.setBar("hoge");
-		List<Violation<StringFoo>> violations = new Validator().validate(stringFoo);
+		List<ConstraintViolation<StringFoo>> violations = new Validator().validate(stringFoo);
 		DefaultMessageGenerator gen = new DefaultMessageGenerator();
 		String msg = violations.stream().map(it -> gen.generateMessage(it)).collect(Collectors.joining(","));
 		assertEquals("", msg);
@@ -35,7 +35,7 @@ public class SizeRuleTest {
 
 		StringFoo stringFoo = new StringFoo();
 		stringFoo.setBar("hogeeeee");
-		List<Violation<StringFoo>> violations = new Validator().validate(stringFoo);
+		List<ConstraintViolation<StringFoo>> violations = new Validator().validate(stringFoo);
 		DefaultMessageGenerator gen = new DefaultMessageGenerator();
 		String msg = violations.stream().map(it -> gen.generateMessage(it)).collect(Collectors.joining(","));
 		assertEquals("bar: 2 < SizeRuleTest.StringFoo(bar=hogeeeee) < 5", msg);
@@ -48,7 +48,7 @@ public class SizeRuleTest {
 
 		StringFoo stringFoo = new StringFoo();
 		stringFoo.setBar("h");
-		List<Violation<StringFoo>> violations = new Validator().validate(stringFoo);
+		List<ConstraintViolation<StringFoo>> violations = new Validator().validate(stringFoo);
 		DefaultMessageGenerator gen = new DefaultMessageGenerator();
 		String msg = violations.stream().map(it -> gen.generateMessage(it)).collect(Collectors.joining(","));
 		assertEquals("bar: 2 < SizeRuleTest.StringFoo(bar=h) < 5", msg);

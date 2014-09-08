@@ -54,15 +54,15 @@ public class Validator {
 	 * @param bean
 	 * @return return violations.
 	 */
-	public <T> List<Violation<T>> validate(T bean) {
-		List<Violation<T>> violations = new ArrayList<>();
+	public <T> List<ConstraintViolation<T>> validate(T bean) {
+		List<ConstraintViolation<T>> violations = new ArrayList<>();
 		Set<Object> seen = new HashSet<>();
 		doValidate(bean, bean, violations, new ArrayList<String>(), seen);
 		return violations;
 	}
 
 	private <T> void doValidate(T root, Object target,
-			List<Violation<T>> violations,
+			List<ConstraintViolation<T>> violations,
 			List<String> route,
 			Set<Object> seen) {
 		if (logger.isDebugEnabled()) {
@@ -132,7 +132,7 @@ public class Validator {
 	}
 
 	private <T> void validateField(T root, Object target,
-			List<Violation<T>> violations, List<String> route,
+			List<ConstraintViolation<T>> violations, List<String> route,
 			Set<Object> seen, Accessor accessor) {
 		String name = accessor.getName();
 		Object fieldValue = accessor.get(target);
@@ -142,7 +142,7 @@ public class Validator {
 			if (fieldValue == null) {
 				List<String> currentRoute = new ArrayList<>(route);
 				currentRoute.add(name);
-				violations.add(new Violation<T>(root, target,
+				violations.add(new ConstraintViolation<T>(root, target,
 						notNullAnnotation,
 						currentRoute));
 				return;
@@ -156,7 +156,7 @@ public class Validator {
 						fieldValue)) {
 					List<String> currentRoute = new ArrayList<>(route);
 					currentRoute.add(name);
-					violations.add(new Violation<T>(root, target,
+					violations.add(new ConstraintViolation<T>(root, target,
 							annotation,
 							currentRoute));
 				}

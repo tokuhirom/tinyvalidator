@@ -20,7 +20,7 @@ public class NestedTest {
 		bar.setX("hoge");
 		foo.setBar(bar);
 		Validator validator = new Validator();
-		List<Violation<Foo>> violations = validator.validate(foo);
+		List<ConstraintViolation<Foo>> violations = validator.validate(foo);
 		assertTrue(violations.isEmpty());
 	}
 
@@ -31,7 +31,7 @@ public class NestedTest {
 		bar.setX(null); // <-- err
 		foo.setBar(bar);
 		Validator validator = new Validator();
-		List<Violation<Foo>> violations = validator.validate(foo);
+		List<ConstraintViolation<Foo>> violations = validator.validate(foo);
 		assertFalse(violations.isEmpty());
 		assertEquals(1, violations.size());
 	}

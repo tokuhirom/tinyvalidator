@@ -21,7 +21,7 @@ public class ValidatorTestWithLombok {
 		foo.setBar("hoge");
 		foo.setBaz(5);
 		Validator validator = new Validator();
-		List<Violation<Foo>> violations = validator.validate(foo);
+		List<ConstraintViolation<Foo>> violations = validator.validate(foo);
 		assertTrue(violations.isEmpty());
 	}
 
@@ -31,7 +31,7 @@ public class ValidatorTestWithLombok {
 		foo.setBar(null);
 		foo.setBaz(5);
 		Validator validator = new Validator();
-		List<Violation<Foo>> violations = validator.validate(foo);
+		List<ConstraintViolation<Foo>> violations = validator.validate(foo);
 		assertFalse(violations.isEmpty());
 		MessageGenerator msggen = new DefaultMessageGenerator();
 		String msg = violations.stream().map(violation -> msggen.generateMessage(violation)).collect(Collectors.joining(":::"));
@@ -45,7 +45,7 @@ public class ValidatorTestWithLombok {
 
 		Foo foo = new Foo();
 		Validator validator = new Validator();
-		List<Violation<Foo>> violations = validator.validate(foo);
+		List<ConstraintViolation<Foo>> violations = validator.validate(foo);
 		assertFalse(violations.isEmpty());
 		MessageGenerator msggen = new DefaultMessageGenerator();
 		String msg = violations.stream().map(violation -> msggen.generateMessage(violation)).collect(Collectors.joining(":::"));

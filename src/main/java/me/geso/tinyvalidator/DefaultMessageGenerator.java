@@ -15,7 +15,7 @@ public class DefaultMessageGenerator implements MessageGenerator {
 		this.generators.put(annotationClass, messageGenerator);
 	}
 
-	public <T> String generateMessage(Violation<T> violation) {
+	public <T> String generateMessage(ConstraintViolation<T> violation) {
 		if (generators.containsKey(violation.getAnnotation().annotationType())) {
 			MessageGenerator messageGenerator = generators.get(violation.getAnnotation().annotationType());
 			return messageGenerator.generateMessage(violation);
