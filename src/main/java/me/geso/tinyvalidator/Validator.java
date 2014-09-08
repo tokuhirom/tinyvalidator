@@ -129,7 +129,9 @@ public class Validator {
 							|| "classLoader".equals(descriptor.getName())) {
 						continue;
 					}
-					accessorList.add(new PropertyAccessor(descriptor));
+					if (descriptor.getReadMethod().getAnnotations().length > 0) {
+						accessorList.add(new PropertyAccessor(descriptor));
+					}
 				}
 			} catch (IntrospectionException e) {
 				throw new RuntimeException(e);
