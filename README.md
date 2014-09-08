@@ -53,6 +53,15 @@ min's default value is 0, max's default value is `Integer.MAX_VALUE`.
 
 `bar` should match the regular rexpression.
 
+## HOW DO I DEBUG VALIDATION RULE USING THIS LIBRARY?
+
+This library output logs with slf4j. The package name is under `the me.geso.tinyvalidator`. Please set the debug log level as `debug`.
+
+If you are using slf4j-simple, please try following VM options.
+
+    -Dorg.slf4j.simpleLogger.defaultLogLevel=debug
+
+
 ## HOW DO I IMPLEMENT MY OWN RULE?
 
  1. Implement annotation

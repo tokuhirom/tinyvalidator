@@ -182,7 +182,7 @@ public class Validator {
 		// Checking child by recursion.
 		if (fieldValue != null
 				&& Object.class.isAssignableFrom(fieldValue.getClass())) {
-			if (!seen.contains(target)) {
+			if (!seen.contains(fieldValue)) {
 				List<String> currentRoute = new ArrayList<>(route);
 				currentRoute.add(name);
 				doValidate(root, fieldValue, violations, route, seen);
