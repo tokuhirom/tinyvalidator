@@ -6,9 +6,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +26,7 @@ import org.slf4j.LoggerFactory;
 public class Validator {
 	private static Logger logger = LoggerFactory.getLogger(Validator.class);
 	private Map<Class<? extends Annotation>, Rule> rules;
-	private static Map<Class<?>, PropertyDescriptor[]> propertyDescriptorsCache = new ConcurrentHashMap<>();
+	private static Map<Class<?>, Accessor[]> accessorCache = new ConcurrentHashMap<>();
 
 	public Validator() {
 		this.rules = new HashMap<>();
@@ -103,101 +101,69 @@ public class Validator {
 			return;
 		}
 
-		try {
-			seen.add(target);
+		seen.add(target);
 
-			// Validate by properties.
-			{
-				for (PropertyDescriptor descriptor : this.getPropertyDescriptors(target)) {
-					if (logger.isDebugEnabled()) {
-						logger.debug(
-								"Checking root: {}, target: {} descriptor: {}",
-								root.getClass(), target.getClass(),
-								descriptor.getName());
-					}
-
-					Method getter = descriptor.getReadMethod();
-					getter.setAccessible(true);
-					Object fieldValue = null;
-					if (getter != null) {
-						fieldValue = getter.invoke(target);
-					}
-
-					Set<Annotation> annotations = new HashSet<>();
-					for (Annotation annotation : getter.getAnnotations()) {
-						annotations.add(annotation);
-					}
-
-					this.validateField(root, target, violations,
-							route, seen, descriptor.getName(), annotations,
-							fieldValue);
-				}
-			}
-
-			// Validate by fields.
+		Accessor[] accessors = this.getAccessors(target);
+		for (Accessor accessor : accessors) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(
-						"fields: {}, {}", target.getClass(), target.getClass()
-								.getFields());
+						"Checking root: {}, target: {} descriptor: {}",
+						root.getClass(), target.getClass(),
+						accessor.getName());
 			}
-			for (Field field : target.getClass().getDeclaredFields()) {
-				if (logger.isDebugEnabled()) {
-					logger.debug(
-							"Checking by field:: root: {}, target: {} descriptor: {}",
-							root.getClass(), target.getClass(),
-							field.getName());
-				}
 
-				field.setAccessible(true);
-				Object fieldValue = field.get(target);
-				Set<Annotation> annotations = new HashSet<>();
-				for (Annotation annotation : field.getAnnotations()) {
-					annotations.add(annotation);
-				}
-				this.validateField(root, target, violations, route, seen,
-						field.getName(), annotations, fieldValue);
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+			this.validateField(root, target, violations,
+					route, seen, accessor);
 		}
 	}
 
-	private PropertyDescriptor[] getPropertyDescriptors(Object bean) {
-		try {
-			PropertyDescriptor[] propertyDescriptors = propertyDescriptorsCache.get(bean.getClass());
-			if (propertyDescriptors == null) {
+	private Accessor[] getAccessors(Object bean) {
+		Accessor[] accessors = accessorCache.get(bean.getClass());
+		if (accessors == null) {
+			List<Accessor> accessorList = new ArrayList<>();
+			try {
 				BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
-				propertyDescriptors = Arrays
-						.stream(beanInfo
-								.getPropertyDescriptors())
-						.filter(it -> !("class".equals(it.getName()) || "classLoader"
-								.equals(it.getName())))
-						.toArray(PropertyDescriptor[]::new);
-				propertyDescriptorsCache.put(bean.getClass(), propertyDescriptors);
+				for (PropertyDescriptor descriptor : beanInfo
+						.getPropertyDescriptors()) {
+					if ("class".equals(descriptor.getName())
+							|| "classLoader".equals(descriptor.getName())) {
+						continue;
+					}
+					accessorList.add(new PropertyAccessor(descriptor));
+				}
+			} catch (IntrospectionException e) {
+				throw new RuntimeException(e);
 			}
-			return propertyDescriptors;
-		} catch (IntrospectionException e) {
-			throw new RuntimeException(e);
+			for (Field field : bean.getClass().getDeclaredFields()) {
+				if (field.getAnnotations().length > 0) {
+					accessorList.add(new FieldAccessor(field));
+				}
+			}
+			accessors = accessorList.toArray(new Accessor[0]);
+			accessorCache.put(bean.getClass(), accessors);
 		}
+		return accessors;
 	}
 
 	private <T> void validateField(T root, Object target,
 			List<Violation<T>> violations, List<String> route,
-			Set<Object> seen, String name, Set<Annotation> annotations,
-			Object fieldValue) {
-		for (Annotation annotation : annotations) {
-			if (annotation instanceof NotNull) {
-				if (fieldValue == null) {
-					List<String> currentRoute = new ArrayList<>(route);
-					currentRoute.add(name);
-					violations.add(new Violation<T>(root, target,
-							annotation,
-							currentRoute));
-				}
+			Set<Object> seen, Accessor accessor) {
+		String name = accessor.getName();
+		Object fieldValue = accessor.get(target);
+
+		NotNull notNullAnnotation = accessor.getAnnotation(NotNull.class);
+		if (notNullAnnotation != null) {
+			if (fieldValue == null) {
+				List<String> currentRoute = new ArrayList<>(route);
+				currentRoute.add(name);
+				violations.add(new Violation<T>(root, target,
+						notNullAnnotation,
+						currentRoute));
+				return;
 			}
 		}
 
-		for (Annotation annotation : annotations) {
+		for (Annotation annotation : accessor.getAnnotations()) {
 			Rule rule = rules.get(annotation.annotationType());
 			if (rule != null) {
 				if (!rule.validate(root, target, route, name, annotation,
