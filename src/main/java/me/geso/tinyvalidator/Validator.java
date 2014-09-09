@@ -112,10 +112,11 @@ public class Validator {
         for (Annotation annotation : accessor.getAnnotations()) {
             final Constraint constraint = annotation.annotationType().getAnnotation(Constraint.class);
             if (constraint == null) {
-                throw new RuntimeException(
-                        String.format("%s doesn't have a @Constraint annotation.",
-                                annotation.annotationType())
+                logger.debug(
+                        "{} doesn't have a @Constraint annotation: {}",
+                        annotation.annotationType(), annotation.annotationType().getAnnotations()
                 );
+                continue;
             }
             final Class<? extends ConstraintValidator> constraintValidatorClass = constraint.validatedBy();
             final ConstraintValidator constraintValidator = constraintValidatorClass.newInstance();
