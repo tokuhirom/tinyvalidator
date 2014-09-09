@@ -17,4 +17,6 @@ public @interface Size {
 	 * @return size the element must be lower or equal to
 	 */
 	int max() default Integer.MAX_VALUE;
+
+	String message() default "size must be between {min} and {max}";
 }

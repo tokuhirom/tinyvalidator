@@ -17,4 +17,5 @@ import java.lang.annotation.Target;
 @Target({ ElementType.FIELD, ElementType.METHOD })
 public @interface Pattern {
 	String regexp();
+	String message() default "must match {regexp}";
 }

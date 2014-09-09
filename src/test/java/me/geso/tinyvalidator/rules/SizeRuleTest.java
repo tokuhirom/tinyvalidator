@@ -39,7 +39,7 @@ public class SizeRuleTest {
 		List<ConstraintViolation<StringFoo>> violations = new Validator().validate(stringFoo);
 		DefaultMessageGenerator gen = new DefaultMessageGenerator();
 		String msg = violations.stream().map(it -> gen.generateMessage(it)).collect(Collectors.joining(","));
-		assertEquals("bar size must be between 2 and 5. But SizeRuleTest.StringFoo(bar=hogeeeee).", msg);
+		assertEquals("bar size must be between 2 and 5", msg);
 		assertTrue(!violations.isEmpty());
 	}
 
@@ -52,7 +52,7 @@ public class SizeRuleTest {
 		List<ConstraintViolation<StringFoo>> violations = new Validator().validate(stringFoo);
 		DefaultMessageGenerator gen = new DefaultMessageGenerator();
 		String msg = violations.stream().map(it -> gen.generateMessage(it)).collect(Collectors.joining(","));
-		assertEquals("bar size must be between 2 and 5. But SizeRuleTest.StringFoo(bar=h).", msg);
+		assertEquals("bar size must be between 2 and 5", msg);
 		assertTrue(!violations.isEmpty());
 	}
 	
