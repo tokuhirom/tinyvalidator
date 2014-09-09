@@ -98,14 +98,14 @@ public class Validator {
             logger.debug("{}.{}'s notNullAnnotation: {}", route,
                     accessor.getName(), notNullAnnotation);
         }
-        if (notNullAnnotation.isPresent()) {
-            if (fieldValue == null) {
+        if (fieldValue == null) {
+            if (notNullAnnotation.isPresent()) {
                 logger.debug("{} is null", route);
                 violations.add(new ConstraintViolation<T>(root, target,
                         notNullAnnotation.get(),
                         route.child(name)));
-                return;
             }
+            return;
         }
 
         for (Annotation annotation : accessor.getAnnotations()) {
