@@ -14,8 +14,8 @@ public class PatternConstraintValidator implements ConstraintValidator {
 	private static Logger logger = LoggerFactory.getLogger(PatternConstraintValidator.class);
 
 	@Override
-	public boolean validate(Object root, Object target, List<String> route,
-			String name, Annotation annotation, Object fieldValue) {
+	public boolean isValid(Object root, Object target, List<String> route,
+                           String name, Annotation annotation, Object fieldValue) {
 		if (fieldValue instanceof String) {
 			Pattern pattern = (Pattern) annotation;
 			java.util.regex.Pattern compiled = java.util.regex.Pattern

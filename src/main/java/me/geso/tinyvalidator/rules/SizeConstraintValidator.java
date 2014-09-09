@@ -14,8 +14,8 @@ public class SizeConstraintValidator implements ConstraintValidator {
 	private static final Logger logger = LoggerFactory.getLogger(SizeConstraintValidator.class);
 
 	@Override
-	public boolean validate(Object root, Object target, List<String> route,
-			String name, Annotation annotation, Object fieldValue) {
+	public boolean isValid(Object root, Object target, List<String> route,
+                           String name, Annotation annotation, Object fieldValue) {
 		Size sizeAnnotation = (Size) annotation;
 		int size = getSize(fieldValue);
 

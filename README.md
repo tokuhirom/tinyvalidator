@@ -65,9 +65,7 @@ If you are using slf4j-simple, please try following VM options.
 ## HOW DO I IMPLEMENT MY OWN RULE?
 
  1. Implement annotation
- 2. Implement rule
- 3. Implement message generator
- 4. Register these objects!
+ 2. Implement constraint validator
 
 ## MOTIVATION
 

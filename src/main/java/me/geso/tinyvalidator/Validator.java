@@ -119,7 +119,7 @@ public class Validator {
             }
             final Class<? extends ConstraintValidator> constraintValidatorClass = constraint.validatedBy();
             final ConstraintValidator constraintValidator = constraintValidatorClass.newInstance();
-            if (!constraintValidator.validate(root, target, route, name, annotation,
+            if (!constraintValidator.isValid(root, target, route, name, annotation,
                     fieldValue)) {
                 List<String> currentRoute = new ArrayList<>(route);
                 currentRoute.add(name);
