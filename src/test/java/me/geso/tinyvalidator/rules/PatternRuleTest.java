@@ -31,9 +31,7 @@ public class PatternRuleTest {
 		List<ConstraintViolation<Foo>> violations = validator.validate(foo);
 		assertFalse(violations.isEmpty());
 		String msg = violations.stream()
-				.map(violation -> {
-					return violation.getRoutePath() + " " + violation.getMessage();
-				})
+				.map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
 				.collect(Collectors.joining(":::"));
 		assertEquals("bar must match \\A[0-9]+\\z", msg);
 	}

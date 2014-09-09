@@ -29,13 +29,14 @@ public class Validator {
     public <T> List<ConstraintViolation<T>> validate(T bean) {
         List<ConstraintViolation<T>> violations = new ArrayList<>();
         Set<Object> seen = new HashSet<>();
-        doValidate(bean, bean, violations, new ArrayList<String>(), seen);
+        Node node = new Node();
+        doValidate(bean, bean, violations, node, seen);
         return violations;
     }
 
     private <T> void doValidate(T root, Object target,
                                 List<ConstraintViolation<T>> violations,
-                                List<String> route,
+                                Node route,
                                 Set<Object> seen) {
         if (logger.isDebugEnabled()) {
             logger.debug(
@@ -87,7 +88,7 @@ public class Validator {
 
     @SneakyThrows
     private <T> void validateField(T root, Object target,
-                                   List<ConstraintViolation<T>> violations, List<String> route,
+                                   List<ConstraintViolation<T>> violations, Node route,
                                    Set<Object> seen, PropertyAccessor accessor) {
         String name = accessor.getName();
         Object fieldValue = accessor.get(target);
@@ -100,11 +101,9 @@ public class Validator {
         if (notNullAnnotation.isPresent()) {
             if (fieldValue == null) {
                 logger.debug("{} is null", route);
-                List<String> currentRoute = new ArrayList<>(route);
-                currentRoute.add(name);
                 violations.add(new ConstraintViolation<T>(root, target,
                         notNullAnnotation.get(),
-                        currentRoute));
+                        route.child(name)));
                 return;
             }
         }
@@ -122,20 +121,16 @@ public class Validator {
             final ConstraintValidator constraintValidator = constraintValidatorClass.newInstance();
             if (!constraintValidator.isValid(root, target, route, name, annotation,
                     fieldValue)) {
-                List<String> currentRoute = new ArrayList<>(route);
-                currentRoute.add(name);
                 violations.add(new ConstraintViolation<T>(root, target,
                         annotation,
-                        currentRoute));
+                        route.child(name)));
             }
         }
 
         // Checking child by recursion.
         if (fieldValue != null && accessor.getValidAnnotation().isPresent()) {
             if (!seen.contains(fieldValue)) {
-                List<String> currentRoute = new ArrayList<>(route);
-                currentRoute.add(name);
-                doValidate(root, fieldValue, violations, route, seen);
+                doValidate(root, fieldValue, violations, route.child(name), seen);
             }
         }
     }

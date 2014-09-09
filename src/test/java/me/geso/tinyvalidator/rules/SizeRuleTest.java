@@ -35,9 +35,7 @@ public class SizeRuleTest {
 		stringFoo.setBar("hogeeeee");
 		List<ConstraintViolation<StringFoo>> violations = new Validator().validate(stringFoo);
 		String msg = violations.stream()
-				.map(violation -> {
-					return violation.getRoutePath() + " " + violation.getMessage();
-				})
+				.map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
 				.collect(Collectors.joining(":::"));
 		assertEquals("bar size must be between 2 and 5", msg);
 		assertTrue(!violations.isEmpty());
@@ -51,9 +49,7 @@ public class SizeRuleTest {
 		stringFoo.setBar("h");
 		List<ConstraintViolation<StringFoo>> violations = new Validator().validate(stringFoo);
 		String msg = violations.stream()
-				.map(violation -> {
-					return violation.getRoutePath() + " " + violation.getMessage();
-				})
+				.map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
 				.collect(Collectors.joining(":::"));
 		assertEquals("bar size must be between 2 and 5", msg);
 		assertTrue(!violations.isEmpty());

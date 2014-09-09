@@ -12,7 +12,7 @@ public class BeanDoesntHaveAFieldTest {
 	@Test
 	public void testFoo() {
 		String msg = new Validator().validate(new Foo()).stream()
-				.map(it -> it.getRoutePath() + " " + it.getMessage())
+				.map(it -> it.getPropertyPath() + " " + it.getMessage())
 				.collect(Collectors.joining(","));
 		assertEquals("bar may not be null.", msg);
 	}

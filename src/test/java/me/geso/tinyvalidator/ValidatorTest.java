@@ -31,9 +31,7 @@ public class ValidatorTest {
 		assertFalse(violations.isEmpty());
 		assertEquals(1, violations.size());
 		String msg = violations.stream()
-				.map(violation -> {
-					return violation.getRoutePath() + " " + violation.getMessage();
-				})
+				.map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
 				.collect(Collectors.joining(":::"));
 		assertEquals("bar may not be null.", msg);
 	}
@@ -45,9 +43,7 @@ public class ValidatorTest {
 		List<ConstraintViolation<Foo>> violations = validator.validate(foo);
 		assertFalse(violations.isEmpty());
 		String msg = violations.stream()
-				.map(violation -> {
-					return violation.getRoutePath() + " " + violation.getMessage();
-				})
+				.map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
 				.collect(Collectors.joining(":::"));
 		assertEquals("bar may not be null.:::baz may not be null.", msg);
 	}
