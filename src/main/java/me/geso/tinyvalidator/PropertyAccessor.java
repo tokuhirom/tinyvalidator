@@ -23,6 +23,7 @@ class PropertyAccessor {
 	private final PropertyDescriptor descriptor;
 	private final List<Annotation> annotations;
 	private final Optional<NotNull> notNullAnnotation;
+	private final Optional<Valid> validAnnotation;
 
 	public PropertyAccessor(final Object bean,
 			final PropertyDescriptor descriptor) {
@@ -48,14 +49,26 @@ class PropertyAccessor {
 			annotations.add(annotation);
 		}
 		this.annotations = Collections.unmodifiableList(annotations);
-		this.notNullAnnotation = this.buildNotNullAnnotation();
+		this.notNullAnnotation = this.buildNotNullAnnotation(annotations);
+		this.validAnnotation = PropertyAccessor.findValidAnnotations(annotations);
 		this.descriptor = descriptor;
 	}
 
-	private Optional<NotNull> buildNotNullAnnotation() {
+	// find NotNull annotation from annotation list.
+	private Optional<NotNull> buildNotNullAnnotation(List<Annotation> annotations) {
 		for (Annotation annotation : annotations) {
 			if (annotation instanceof NotNull) {
 				return Optional.of((NotNull) annotation);
+			}
+		}
+		return Optional.empty();
+	}
+
+	// find NotNull annotation from annotation list.
+	private static Optional<Valid> findValidAnnotations(List<Annotation> annotations) {
+		for (Annotation annotation : annotations) {
+			if (annotation instanceof Valid) {
+				return Optional.of((Valid) annotation);
 			}
 		}
 		return Optional.empty();
@@ -80,6 +93,10 @@ class PropertyAccessor {
 
 	Optional<NotNull> getNotNullAnnotation() {
 		return this.notNullAnnotation;
+	}
+
+	Optional<Valid> getValidAnnotation() {
+		return validAnnotation;
 	}
 
 }

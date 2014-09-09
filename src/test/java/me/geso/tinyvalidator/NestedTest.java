@@ -40,6 +40,7 @@ public class NestedTest {
 	@Data
 	@ToString
 	public static class Foo {
+		@Valid
 		private Bar bar;
 	}
 

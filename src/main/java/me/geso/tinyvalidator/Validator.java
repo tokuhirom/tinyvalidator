@@ -69,14 +69,6 @@ public class Validator {
 			logger.debug(
 					"Checking {}", target.getClass());
 		}
-		if (target.getClass().getPackage().getName().startsWith("java.")) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(
-						"Target class is a built-in object '{}'... Just be ignored.",
-						target.getClass());
-			}
-			return;
-		}
 
 		seen.add(target);
 
@@ -106,7 +98,11 @@ public class Validator {
 							|| "classLoader".equals(descriptor.getName())) {
 						continue;
 					}
-					accessorList.add(new PropertyAccessor(bean, descriptor));
+					PropertyAccessor accessor = new PropertyAccessor(bean,
+							descriptor);
+					if (accessor.getAnnotations().size() > 0) {
+						accessorList.add(accessor);
+					}
 				}
 			} catch (IntrospectionException e) {
 				throw new RuntimeException(e);
@@ -125,7 +121,8 @@ public class Validator {
 
 		Optional<NotNull> notNullAnnotation = accessor.getNotNullAnnotation();
 		if (logger.isDebugEnabled()) {
-			logger.debug("{}.{}'s notNullAnnotation: {}", route, accessor.getName(), notNullAnnotation);
+			logger.debug("{}.{}'s notNullAnnotation: {}", route,
+					accessor.getName(), notNullAnnotation);
 		}
 		if (notNullAnnotation.isPresent()) {
 			if (fieldValue == null) {
@@ -154,8 +151,7 @@ public class Validator {
 		}
 
 		// Checking child by recursion.
-		if (fieldValue != null
-				&& Object.class.isAssignableFrom(fieldValue.getClass())) {
+		if (fieldValue != null && accessor.getValidAnnotation().isPresent()) {
 			if (!seen.contains(fieldValue)) {
 				List<String> currentRoute = new ArrayList<>(route);
 				currentRoute.add(name);
