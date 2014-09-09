@@ -4,14 +4,14 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import me.geso.tinyvalidator.ConstraintValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.geso.tinyvalidator.Rule;
 import me.geso.tinyvalidator.constraints.Pattern;
 
-public class PatternRule implements Rule {
-	private static Logger logger = LoggerFactory.getLogger(PatternRule.class);
+public class PatternConstraintValidator implements ConstraintValidator {
+	private static Logger logger = LoggerFactory.getLogger(PatternConstraintValidator.class);
 
 	@Override
 	public boolean validate(Object root, Object target, List<String> route,

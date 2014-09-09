@@ -4,14 +4,14 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 
+import me.geso.tinyvalidator.ConstraintValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.geso.tinyvalidator.Rule;
 import me.geso.tinyvalidator.constraints.Size;
 
-public class SizeRule implements Rule {
-	private static final Logger logger = LoggerFactory.getLogger(SizeRule.class);
+public class SizeConstraintValidator implements ConstraintValidator {
+	private static final Logger logger = LoggerFactory.getLogger(SizeConstraintValidator.class);
 
 	@Override
 	public boolean validate(Object root, Object target, List<String> route,
