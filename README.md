@@ -1,6 +1,7 @@
 # tinyvalidator
 
-This is a tiny validation library for Java.
+This is a tiny validation library for Java. This library does not support JSR 303.
+This library implements subset of JSR 303 Bean validator.
 
 ## SYNOPSIS
 
