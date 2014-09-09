@@ -21,12 +21,12 @@ public class SizeConstraintValidator implements ConstraintValidator {
 
 		if (size > sizeAnnotation.max()) {
 			if (logger.isDebugEnabled()){
-				logger.debug("SizeRule: {} > {}", size, sizeAnnotation.max());
+				logger.debug("SizeConstraintValidator: {} > {}", size, sizeAnnotation.max());
 			}
 			return false;
 		} else if (size < sizeAnnotation.min()) {
 			if (logger.isDebugEnabled()){
-				logger.debug("SizeRule: {} < {}", size, sizeAnnotation.min());
+				logger.debug("SizeConstraintValidator: {} < {}", size, sizeAnnotation.min());
 			}
 			return false;
 		}
@@ -39,7 +39,7 @@ public class SizeConstraintValidator implements ConstraintValidator {
 		} else if (fieldValue instanceof Map) {
 			return ((Map<?, ?>) fieldValue).size();
 		} else {
-			throw new RuntimeException("me.geso.tinyvalidator.rules.SizeRule can't get a size from: " + fieldValue.getClass());
+			throw new RuntimeException("me.geso.tinyvalidator.rules.SizeConstraintValidator can't get a size from: " + fieldValue.getClass());
 		}
 	}
 
