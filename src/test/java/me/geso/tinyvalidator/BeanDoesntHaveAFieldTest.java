@@ -11,9 +11,8 @@ import org.junit.Test;
 public class BeanDoesntHaveAFieldTest {
 	@Test
 	public void testFoo() {
-		MessageGenerator mg = new DefaultMessageGenerator();
 		String msg = new Validator().validate(new Foo()).stream()
-				.map(it -> mg.generateMessage(it))
+				.map(it -> it.getRoutePath() + " " + it.getMessage())
 				.collect(Collectors.joining(","));
 		assertEquals("bar may not be null.", msg);
 	}

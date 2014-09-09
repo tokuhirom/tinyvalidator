@@ -13,7 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ValidatorTestWithLombok {
-	private static Logger logger = LoggerFactory.getLogger(ValidatorTestWithLombok.class);
+	private static Logger logger = LoggerFactory
+			.getLogger(ValidatorTestWithLombok.class);
 
 	@Test
 	public void testSuccess() {
@@ -33,8 +34,11 @@ public class ValidatorTestWithLombok {
 		Validator validator = new Validator();
 		List<ConstraintViolation<Foo>> violations = validator.validate(foo);
 		assertFalse(violations.isEmpty());
-		MessageGenerator msggen = new DefaultMessageGenerator();
-		String msg = violations.stream().map(violation -> msggen.generateMessage(violation)).collect(Collectors.joining(":::"));
+		String msg = violations.stream()
+				.map(violation -> {
+					return violation.getRoutePath() + " " + violation.getMessage();
+				})
+				.collect(Collectors.joining(":::"));
 		assertEquals("bar may not be null.", msg);
 	}
 
@@ -47,8 +51,11 @@ public class ValidatorTestWithLombok {
 		Validator validator = new Validator();
 		List<ConstraintViolation<Foo>> violations = validator.validate(foo);
 		assertFalse(violations.isEmpty());
-		MessageGenerator msggen = new DefaultMessageGenerator();
-		String msg = violations.stream().map(violation -> msggen.generateMessage(violation)).collect(Collectors.joining(":::"));
+		String msg = violations.stream()
+				.map(violation -> {
+					return violation.getRoutePath() + " " + violation.getMessage();
+				})
+				.collect(Collectors.joining(":::"));
 		assertEquals("bar may not be null.:::baz may not be null.", msg);
 	}
 
