@@ -22,4 +22,5 @@ import java.lang.annotation.Target;
 public @interface Pattern {
 	String regexp();
 	String message() default "must match {regexp}";
+    int flags() default 0;
 }

@@ -19,7 +19,7 @@ public class PatternConstraintValidator implements ConstraintValidator {
 		if (fieldValue instanceof String) {
 			Pattern pattern = (Pattern) annotation;
 			java.util.regex.Pattern compiled = java.util.regex.Pattern
-					.compile(pattern.regexp());
+					.compile(pattern.regexp(), pattern.flags());
 			Matcher matcher = compiled.matcher((String) fieldValue);
 			return matcher.find();
 		} else {
