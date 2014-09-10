@@ -2,18 +2,18 @@ package me.geso.tinyvalidator.constraints;
 
 import me.geso.tinyvalidator.Constraint;
 import me.geso.tinyvalidator.ConstraintValidator;
+import org.apache.commons.validator.routines.EmailValidator;
 
 import java.lang.annotation.*;
-import java.util.regex.Matcher;
 
 /**
  * Created by tokuhirom on 9/10/14.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
-@Constraint(validatedBy=HttpUrl.Validator.class)
-public @interface HttpUrl {
-    String message() default "must be valid HTTP URL";
+@Constraint(validatedBy=Email.Validator.class)
+public @interface Email {
+    public String message() default "must be valid E-mail addresss";
 
     public static class Validator implements ConstraintValidator {
         private static final java.util.regex.Pattern pattern
@@ -24,9 +24,12 @@ public @interface HttpUrl {
             if (fieldValue == null) {
                 return true;
             }
+            if (!(fieldValue instanceof String)) {
+                return false;
+            }
 
-            final Matcher matcher = pattern.matcher(fieldValue.toString());
-            return matcher.matches();
+            EmailValidator validator = EmailValidator.getInstance();
+            return validator.isValid((String)fieldValue);
         }
     }
 }

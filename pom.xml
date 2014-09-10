@@ -63,7 +63,12 @@
 			<version>1.7.7</version>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>
