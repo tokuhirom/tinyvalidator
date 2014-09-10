@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,14 +12,14 @@ import me.geso.tinyvalidator.constraints.NotNull;
 
 import org.junit.Test;
 
-public class ListTest {
+public class ArraysTest {
 
 	@Test
 	public void testSuccess() {
 		Bar bar = new Bar();
 		bar.setBaz("hoge");
 		Foo foo = new Foo();
-		foo.setBar(Arrays.asList(bar));
+		foo.setBar(new Bar[] { bar });
 		Validator validator = new Validator();
 		List<ConstraintViolation> violations = validator.validate(foo);
 		assertTrue(violations.isEmpty());
@@ -30,7 +29,7 @@ public class ListTest {
 	public void testFail() {
 		Bar bar = new Bar();
 		Foo foo = new Foo();
-		foo.setBar(Arrays.asList(bar));
+		foo.setBar(new Bar[] { bar });
 
 		Validator validator = new Validator();
 		List<ConstraintViolation> violations = validator.validate(foo);
@@ -47,7 +46,7 @@ public class ListTest {
 	public static class Foo {
 		@Valid
 		@NotNull
-		private List<Bar> bar;
+		private Bar[] bar;
 	}
 
 	@Data

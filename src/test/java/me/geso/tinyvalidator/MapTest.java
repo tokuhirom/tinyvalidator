@@ -4,8 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.Data;
@@ -13,14 +14,16 @@ import me.geso.tinyvalidator.constraints.NotNull;
 
 import org.junit.Test;
 
-public class ListTest {
+public class MapTest {
 
 	@Test
 	public void testSuccess() {
 		Bar bar = new Bar();
-		bar.setBaz("hoge");
 		Foo foo = new Foo();
-		foo.setBar(Arrays.asList(bar));
+		bar.setBaz("hoge");
+		Map<String, Bar> map = new HashMap<String, Bar>();
+		map.put("hoge", bar);
+		foo.setBar(map);
 		Validator validator = new Validator();
 		List<ConstraintViolation> violations = validator.validate(foo);
 		assertTrue(violations.isEmpty());
@@ -30,7 +33,9 @@ public class ListTest {
 	public void testFail() {
 		Bar bar = new Bar();
 		Foo foo = new Foo();
-		foo.setBar(Arrays.asList(bar));
+		Map<String, Bar> map = new HashMap<String, Bar>();
+		map.put("hoge", bar);
+		foo.setBar(map);
 
 		Validator validator = new Validator();
 		List<ConstraintViolation> violations = validator.validate(foo);
@@ -40,14 +45,14 @@ public class ListTest {
 				.map(violation -> violation.getName() + " "
 						+ violation.getMessage())
 				.collect(Collectors.joining(":::"));
-		assertEquals("bar.0.baz may not be null.", msg);
+		assertEquals("bar.hoge.baz may not be null.", msg);
 	}
 
 	@Data
 	public static class Foo {
 		@Valid
 		@NotNull
-		private List<Bar> bar;
+		private Map<String, Bar> bar;
 	}
 
 	@Data

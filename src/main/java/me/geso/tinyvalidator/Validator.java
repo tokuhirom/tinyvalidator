@@ -1,11 +1,5 @@
 package me.geso.tinyvalidator;
 
-import lombok.SneakyThrows;
-import me.geso.tinyvalidator.constraints.NotNull;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -13,11 +7,16 @@ import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+
+import lombok.SneakyThrows;
+import me.geso.tinyvalidator.constraints.NotNull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Validator {
 	private static Logger logger = LoggerFactory.getLogger(Validator.class);
@@ -126,9 +125,32 @@ public class Validator {
 		if (fieldValue != null && accessor.getValidAnnotation().isPresent()) {
 			if (!context.isSeen(fieldValue)) {
 				if (fieldValue instanceof Collection) {
-					Integer i=0;
+					int i = 0;
 					for (Object item : (Collection<?>) fieldValue) {
-						this.doValidate(item, context, node.child(name).child(i.toString()));
+						this.doValidate(item, context,
+								node.child(name).child("" + i));
+						++i;
+					}
+				} else if (fieldValue instanceof Map) {
+					// Validate keys
+					for (Object key : ((Map<?, ?>) fieldValue).keySet()) {
+						if (!key.getClass().isPrimitive()) {
+							this.doValidate(key, context,
+									node.child(name).child("key"));
+						}
+					}
+					// Validate values
+					for (Object key : ((Map<?, ?>) fieldValue).keySet()) {
+						Object value = ((Map<?, ?>) fieldValue).get(key);
+						this.doValidate(value, context,
+								node.child(name).child(key.toString()));
+					}
+				} else if (fieldValue.getClass().isArray()) {
+					Object[] array = (Object[]) fieldValue;
+					int i = 0;
+					for (Object item : array) {
+						this.doValidate(item, context,
+								node.child(name).child("" + i));
 						++i;
 					}
 				} else {
