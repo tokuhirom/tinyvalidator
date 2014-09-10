@@ -1,7 +1,6 @@
 package me.geso.tinyvalidator.rules;
 
 import me.geso.tinyvalidator.ConstraintValidator;
-import me.geso.tinyvalidator.Node;
 import me.geso.tinyvalidator.constraints.Size;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +13,8 @@ public class SizeConstraintValidator implements ConstraintValidator {
     private static final Logger logger = LoggerFactory.getLogger(SizeConstraintValidator.class);
 
     @Override
-    public boolean isValid(Object root, Object target, Node route,
-                           String name, Annotation annotation, Object fieldValue) {
+    public boolean isValid(Annotation annotation,
+                           Object fieldValue) {
         Size sizeAnnotation = (Size) annotation;
         int size = getSize(fieldValue);
 

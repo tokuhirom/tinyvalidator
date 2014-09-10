@@ -10,7 +10,10 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Validator {
@@ -27,35 +30,32 @@ public class Validator {
      * @return return violations.
      */
     public <T> List<ConstraintViolation<T>> validate(T bean) {
-        List<ConstraintViolation<T>> violations = new ArrayList<>();
-        Set<Object> seen = new HashSet<>();
+        ValidationContext<T> context = new ValidationContext<>(bean);
         Node node = new Node();
-        doValidate(bean, bean, violations, node, seen);
-        return violations;
+        this.doValidate(bean, context, node);
+        return context.getViolations();
     }
 
-    private <T> void doValidate(T root, Object target,
-                                List<ConstraintViolation<T>> violations,
-                                Node route,
-                                Set<Object> seen) {
+    private <T> void doValidate(Object target,
+                                ValidationContext<T> context,
+                                Node node) {
         if (logger.isDebugEnabled()) {
             logger.debug(
                     "Checking {}", target.getClass());
         }
 
-        seen.add(target);
+        context.registerSeen(target);
 
         PropertyAccessor[] accessors = this.getAccessors(target);
         for (PropertyAccessor accessor : accessors) {
             if (logger.isDebugEnabled()) {
                 logger.debug(
                         "Checking root: {}, target: {} descriptor: {}",
-                        root.getClass(), target.getClass(),
+                        context.getRootObject(), target.getClass(),
                         accessor.getName());
             }
 
-            this.validateField(root, target, violations,
-                    route, seen, accessor);
+            this.validateField(target, context, accessor, node);
         }
     }
 
@@ -87,23 +87,26 @@ public class Validator {
     }
 
     @SneakyThrows
-    private <T> void validateField(T root, Object target,
-                                   List<ConstraintViolation<T>> violations, Node route,
-                                   Set<Object> seen, PropertyAccessor accessor) {
+    private <T> void validateField(Object target,
+                                   ValidationContext<T> context,
+                                   PropertyAccessor accessor,
+                                   Node node) {
         String name = accessor.getName();
         Object fieldValue = accessor.get(target);
 
         Optional<NotNull> notNullAnnotation = accessor.getNotNullAnnotation();
         if (logger.isDebugEnabled()) {
-            logger.debug("{}.{}'s notNullAnnotation: {}", route,
+            logger.debug("{}.{}'s notNullAnnotation: {}", context.getRoute(),
                     accessor.getName(), notNullAnnotation);
         }
         if (fieldValue == null) {
             if (notNullAnnotation.isPresent()) {
-                logger.debug("{} is null", route);
-                violations.add(new ConstraintViolation<T>(root, target,
+                logger.debug("{} is null", context.getRoute());
+                context.addViolation(
                         notNullAnnotation.get(),
-                        route.child(name)));
+                        fieldValue,
+                        node.child(name)
+                );
             }
             return;
         }
@@ -117,22 +120,37 @@ public class Validator {
                 );
                 continue;
             }
-            final Class<? extends ConstraintValidator> constraintValidatorClass = constraint.validatedBy();
-            final ConstraintValidator constraintValidator = constraintValidatorClass.newInstance();
-            if (!constraintValidator.isValid(root, target, route, name, annotation,
-                    fieldValue)) {
-                violations.add(new ConstraintViolation<T>(root, target,
+            if (!this.validateByAnnotation(constraint, annotation, fieldValue)) {
+                context.addViolation(
                         annotation,
-                        route.child(name)));
+                        fieldValue,
+                        node.child(name)
+                );
             }
         }
 
         // Checking child by recursion.
         if (fieldValue != null && accessor.getValidAnnotation().isPresent()) {
-            if (!seen.contains(fieldValue)) {
-                doValidate(root, fieldValue, violations, route.child(name), seen);
+            if (!context.isSeen(fieldValue)) {
+                this.doValidate(fieldValue, context, node.child(name));
             }
         }
     }
 
+    /**
+     * Validate value by annotation.
+     *
+     * @param constraint
+     * @param annotation
+     * @param value
+     * @return
+     */
+    @SneakyThrows
+    public boolean validateByAnnotation(Constraint constraint,
+                                        Annotation annotation,
+                                        Object value) {
+        final Class<? extends ConstraintValidator> constraintValidatorClass = constraint.validatedBy();
+        final ConstraintValidator constraintValidator = constraintValidatorClass.newInstance();
+        return constraintValidator.isValid(annotation, value);
+    }
 }

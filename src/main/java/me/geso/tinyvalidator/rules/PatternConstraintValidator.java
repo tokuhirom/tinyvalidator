@@ -4,7 +4,6 @@ import java.lang.annotation.Annotation;
 import java.util.regex.Matcher;
 
 import me.geso.tinyvalidator.ConstraintValidator;
-import me.geso.tinyvalidator.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,8 +13,8 @@ public class PatternConstraintValidator implements ConstraintValidator {
 	private static Logger logger = LoggerFactory.getLogger(PatternConstraintValidator.class);
 
 	@Override
-	public boolean isValid(Object root, Object target, Node route,
-                           String name, Annotation annotation, Object fieldValue) {
+	public boolean isValid(Annotation annotation,
+                           Object fieldValue) {
 		if (fieldValue instanceof String) {
 			Pattern pattern = (Pattern) annotation;
 			java.util.regex.Pattern compiled = java.util.regex.Pattern
