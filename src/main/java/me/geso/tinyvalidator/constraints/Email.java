@@ -16,9 +16,6 @@ public @interface Email {
     public String message() default "must be valid E-mail addresss";
 
     public static class Validator implements ConstraintValidator {
-        private static final java.util.regex.Pattern pattern
-                = java.util.regex.Pattern.compile("\\As?https?://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+\\z");
-
         @Override
         public boolean isValid(Annotation annotation, Object fieldValue) {
             if (fieldValue == null) {

@@ -1,7 +1,10 @@
 package me.geso.tinyvalidator;
 
-import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by tokuhirom on 9/10/14.

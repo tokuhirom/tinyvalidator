@@ -1,15 +1,14 @@
 package me.geso.tinyvalidator;
 
-import lombok.Getter;
-import lombok.SneakyThrows;
-import lombok.ToString;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+
+import lombok.Getter;
+import lombok.SneakyThrows;
+import lombok.ToString;
 
 @ToString
 public class ConstraintViolation {
