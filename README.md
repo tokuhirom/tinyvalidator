@@ -6,10 +6,9 @@ This library implements subset of JSR 303 Bean validator.
 ## SYNOPSIS
 
     Validator validator = new Validator();
-    List<Violation<Foo>> violations = validator.validate(foo);
-    DefaultMessageGenerator generator = new DefaultMessageGenerator();
+    List<Violation> violations = validator.validate(foo);
     String msg = violations.stream()
-      .map(it -> generator.generateMessage(it))
+      .map(violation -> violation.getName() + " " + violation.getMessage())
       .collect(Collectors.joining(","));
 
 Bean definition:
@@ -53,6 +52,26 @@ min's default value is 0, max's default value is `Integer.MAX_VALUE`.
     }
 
 `bar` should match the regular rexpression.
+
+### `@HttpUrl`
+
+    @Data
+    public static class Foo {
+      @HttpUrl
+      private String url;
+    }
+
+Validate the field as valid HTTP URL.
+
+### `@Email`
+
+    @Data
+    public static class Foo {
+      @Email
+      private String email;
+    }
+
+Validate the field as valid E-mail address.
 
 ## HOW DO I DEBUG VALIDATION RULE USING THIS LIBRARY?
 

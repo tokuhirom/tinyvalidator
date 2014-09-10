@@ -1,10 +1,6 @@
 package me.geso.tinyvalidator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by tokuhirom on 9/10/14.
@@ -13,19 +9,19 @@ class ValidationContext {
     private final List<ConstraintViolation> violations = new ArrayList<>();
     private final Set<Object> seen = new HashSet<>();
 
-    public List<ConstraintViolation> getViolations() {
+    List<ConstraintViolation> getViolations() {
         return Collections.unmodifiableList(violations);
     }
 
-    public void registerSeen(Object target) {
+    void registerSeen(Object target) {
         this.seen.add(target);
     }
 
-    public boolean isSeen(Object fieldValue) {
+    boolean isSeen(Object fieldValue) {
         return this.seen.contains(fieldValue);
     }
 
-    public void addViolation(ConstraintViolation violation) {
+    void addViolation(ConstraintViolation violation) {
         this.violations.add(violation);
     }
 }

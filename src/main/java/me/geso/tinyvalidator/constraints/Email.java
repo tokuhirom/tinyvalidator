@@ -7,11 +7,11 @@ import org.apache.commons.validator.routines.EmailValidator;
 import java.lang.annotation.*;
 
 /**
- * Created by tokuhirom on 9/10/14.
+ * Validate the value is a valid E-mail address.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
-@Constraint(validatedBy=Email.Validator.class)
+@Constraint(validatedBy = Email.Validator.class)
 public @interface Email {
     public String message() default "must be valid E-mail addresss";
 
@@ -26,7 +26,7 @@ public @interface Email {
             }
 
             EmailValidator validator = EmailValidator.getInstance();
-            return validator.isValid((String)fieldValue);
+            return validator.isValid((String) fieldValue);
         }
     }
 }

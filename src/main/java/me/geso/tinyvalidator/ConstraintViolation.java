@@ -1,32 +1,36 @@
 package me.geso.tinyvalidator;
 
+import lombok.SneakyThrows;
+import lombok.ToString;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.Getter;
-import lombok.SneakyThrows;
-import lombok.ToString;
-
+/**
+ * Constraint violation class.
+ */
 @ToString
 public class ConstraintViolation {
-    @Getter
     private final Object value;
     private final Annotation annotation;
-    @Getter
     private final String name;
 
     private static final Pattern pattern = Pattern.compile("\\{([^}]+)\\}");
 
-    public ConstraintViolation(Object value,
-                               Annotation annotation, String name) {
+    ConstraintViolation(Object value,
+                        Annotation annotation,
+                        String name) {
         this.value = value;
         this.annotation = annotation;
         this.name = name;
     }
 
+    /**
+     * Get the validation message.
+     */
     @SneakyThrows
     public String getMessage() {
         // ref.
@@ -48,5 +52,20 @@ public class ConstraintViolation {
         matcher.appendTail(resultString);
         return resultString.toString();
     }
+
+    /**
+     * Get the value validated.
+     */
+    public Object getValue() {
+        return this.value;
+    }
+
+    /**
+     * Get the parameter name.
+     */
+    public String getName() {
+        return name;
+    }
+
 
 }

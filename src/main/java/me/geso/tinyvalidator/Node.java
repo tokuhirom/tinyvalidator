@@ -5,28 +5,25 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by tokuhirom on 9/10/14.
- */
-public class Node {
+class Node {
     private final Node parent;
     private final String name;
 
-    public Node() {
+    Node() {
         this.parent = null;
         this.name = null;
     }
 
-    public Node(final Node parent, final String name) {
+    Node(final Node parent, final String name) {
         this.parent = parent;
         this.name = name;
     }
 
-    public Node child(final String name) {
+    Node child(final String name) {
         return new Node(this, name);
     }
 
-    public List<String> toList() {
+    List<String> toList() {
         Node n = this;
         List<String> path = new ArrayList< >();
         while (n.parent != null) {

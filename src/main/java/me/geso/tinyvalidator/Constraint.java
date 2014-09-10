@@ -4,9 +4,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created by tokuhirom on 9/10/14.
+ * Annotation for constraint annotation.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Constraint {
-    public Class<? extends ConstraintValidator>validatedBy();
+    /**
+     * Reference for constraint validator implementation.
+     */
+    public Class<? extends ConstraintValidator> validatedBy();
 }

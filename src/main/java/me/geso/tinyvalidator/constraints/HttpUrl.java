@@ -7,11 +7,11 @@ import java.lang.annotation.*;
 import java.util.regex.Matcher;
 
 /**
- * Created by tokuhirom on 9/10/14.
+ * Validate the value as a valid HTTP URL.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
-@Constraint(validatedBy=HttpUrl.Validator.class)
+@Constraint(validatedBy = HttpUrl.Validator.class)
 public @interface HttpUrl {
     String message() default "must be valid HTTP URL";
 
