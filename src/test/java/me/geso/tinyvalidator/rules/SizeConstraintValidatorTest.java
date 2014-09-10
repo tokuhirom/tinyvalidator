@@ -24,7 +24,7 @@ public class SizeConstraintValidatorTest {
     public void testTrueString() {
         StringFoo stringFoo = new StringFoo();
         stringFoo.setBar("hoge");
-        List<ConstraintViolation<StringFoo>> violations = new Validator().validate(stringFoo);
+        List<ConstraintViolation> violations = new Validator().validate(stringFoo);
         assertTrue(violations.isEmpty());
     }
 
@@ -35,9 +35,9 @@ public class SizeConstraintValidatorTest {
 
         StringFoo stringFoo = new StringFoo();
         stringFoo.setBar("hogeeeee");
-        List<ConstraintViolation<StringFoo>> violations = new Validator().validate(stringFoo);
+        List<ConstraintViolation> violations = new Validator().validate(stringFoo);
         String msg = violations.stream()
-                .map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
+                .map(violation -> violation.getName() + " " + violation.getMessage())
                 .collect(Collectors.joining(":::"));
         assertEquals("bar size must be between 2 and 5", msg);
         assertTrue(!violations.isEmpty());
@@ -49,9 +49,9 @@ public class SizeConstraintValidatorTest {
 
         StringFoo stringFoo = new StringFoo();
         stringFoo.setBar("h");
-        List<ConstraintViolation<StringFoo>> violations = new Validator().validate(stringFoo);
+        List<ConstraintViolation> violations = new Validator().validate(stringFoo);
         String msg = violations.stream()
-                .map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
+                .map(violation -> violation.getName() + " " + violation.getMessage())
                 .collect(Collectors.joining(":::"));
         assertEquals("bar size must be between 2 and 5", msg);
         assertTrue(!violations.isEmpty());
@@ -69,7 +69,7 @@ public class SizeConstraintValidatorTest {
     public void testSuccessCollection() {
         CollectionFoo foo = new CollectionFoo();
         foo.setBar(Arrays.asList("hoge", "fuga"));
-        List<ConstraintViolation<CollectionFoo>> violations = new Validator().validate(foo);
+        List<ConstraintViolation> violations = new Validator().validate(foo);
         assertTrue(violations.isEmpty());
     }
 
@@ -77,10 +77,10 @@ public class SizeConstraintValidatorTest {
     public void testFailCollectionTooShort() {
         CollectionFoo foo = new CollectionFoo();
         foo.setBar(Arrays.asList());
-        List<ConstraintViolation<CollectionFoo>> violations = new Validator().validate(foo);
+        List<ConstraintViolation> violations = new Validator().validate(foo);
         assertFalse(violations.isEmpty());
         String msg = violations.stream()
-                .map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
+                .map(violation -> violation.getName() + " " + violation.getMessage())
                 .collect(Collectors.joining(":::"));
         assertEquals("bar size must be between 2 and 5", msg);
     }
@@ -89,10 +89,10 @@ public class SizeConstraintValidatorTest {
     public void testFailCollectionTooLarge() {
         CollectionFoo foo = new CollectionFoo();
         foo.setBar(Arrays.asList("a", "b", "c", "d", "e", "f"));
-        List<ConstraintViolation<CollectionFoo>> violations = new Validator().validate(foo);
+        List<ConstraintViolation> violations = new Validator().validate(foo);
         assertFalse(violations.isEmpty());
         String msg = violations.stream()
-                .map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
+                .map(violation -> violation.getName() + " " + violation.getMessage())
                 .collect(Collectors.joining(":::"));
         assertEquals("bar size must be between 2 and 5", msg);
     }
@@ -111,7 +111,7 @@ public class SizeConstraintValidatorTest {
         Map<String, String> map = new HashMap<>();
         map.put("a", "1");
         foo.setBar(map);
-        List<ConstraintViolation<MapFoo>> violations = new Validator().validate(foo);
+        List<ConstraintViolation> violations = new Validator().validate(foo);
         assertTrue(violations.isEmpty());
     }
 
@@ -120,10 +120,10 @@ public class SizeConstraintValidatorTest {
         MapFoo foo = new MapFoo();
         Map<String, String> map = new HashMap<>();
         foo.setBar(map);
-        List<ConstraintViolation<MapFoo>> violations = new Validator().validate(foo);
+        List<ConstraintViolation> violations = new Validator().validate(foo);
         assertFalse(violations.isEmpty());
         String msg = violations.stream()
-                .map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
+                .map(violation -> violation.getName() + " " + violation.getMessage())
                 .collect(Collectors.joining(":::"));
         assertEquals("bar size must be between 1 and 2", msg);
     }
@@ -136,10 +136,10 @@ public class SizeConstraintValidatorTest {
         map.put("b", "2");
         map.put("c", "3");
         foo.setBar(map);
-        List<ConstraintViolation<MapFoo>> violations = new Validator().validate(foo);
+        List<ConstraintViolation> violations = new Validator().validate(foo);
         assertFalse(violations.isEmpty());
         String msg = violations.stream()
-                .map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
+                .map(violation -> violation.getName() + " " + violation.getMessage())
                 .collect(Collectors.joining(":::"));
         assertEquals("bar size must be between 1 and 2", msg);
     }
@@ -156,7 +156,7 @@ public class SizeConstraintValidatorTest {
     public void testSuccessArray() {
         ArrayFoo foo = new ArrayFoo();
         foo.setBar(new int[]{1, 2});
-        List<ConstraintViolation<ArrayFoo>> violations = new Validator().validate(foo);
+        List<ConstraintViolation> violations = new Validator().validate(foo);
         assertTrue(violations.isEmpty());
     }
 
@@ -164,10 +164,10 @@ public class SizeConstraintValidatorTest {
     public void testFailArrayTooSmall() {
         ArrayFoo foo = new ArrayFoo();
         foo.setBar(new int[]{1});
-        List<ConstraintViolation<ArrayFoo>> violations = new Validator().validate(foo);
+        List<ConstraintViolation> violations = new Validator().validate(foo);
         assertFalse(violations.isEmpty());
         String msg = violations.stream()
-                .map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
+                .map(violation -> violation.getName() + " " + violation.getMessage())
                 .collect(Collectors.joining(":::"));
         assertEquals("bar size must be between 2 and 3", msg);
     }
@@ -176,10 +176,10 @@ public class SizeConstraintValidatorTest {
     public void testFailArrayTooLarge() {
         ArrayFoo foo = new ArrayFoo();
         foo.setBar(new int[]{1, 2, 3, 4, 5});
-        List<ConstraintViolation<ArrayFoo>> violations = new Validator().validate(foo);
+        List<ConstraintViolation> violations = new Validator().validate(foo);
         assertFalse(violations.isEmpty());
         String msg = violations.stream()
-                .map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
+                .map(violation -> violation.getName() + " " + violation.getMessage())
                 .collect(Collectors.joining(":::"));
         assertEquals("bar size must be between 2 and 3", msg);
     }

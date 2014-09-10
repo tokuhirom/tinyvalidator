@@ -1,6 +1,8 @@
 package me.geso.tinyvalidator;
 
+import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.ToString;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -9,39 +11,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class ConstraintViolation<T> {
-    @Override
-    public String toString() {
-        return "ConstraintViolation [object=" + object + ", annotation="
-                + annotation + ", route=" + route + ", fieldValue="
-                + fieldValue + "]";
-    }
+@ToString
+public class ConstraintViolation {
+    @Getter
+    private final Object value;
+    private final Annotation annotation;
+    @Getter
+    private final String name;
 
     private static final Pattern pattern = Pattern.compile("\\{([^}]+)\\}");
 
-    private final T object;
-    private final Annotation annotation;
-    private final Node route;
-    private final Object fieldValue;
-
-    public ConstraintViolation(T object, Object fieldValue,
-                               Annotation annotation, Node route) {
-        this.object = object;
-        this.fieldValue = fieldValue;
+    public ConstraintViolation(Object value,
+                               Annotation annotation, String name) {
+        this.value = value;
         this.annotation = annotation;
-        this.route = route;
-    }
-
-    public T getObject() {
-        return object;
-    }
-
-    public Annotation getAnnotation() {
-        return annotation;
-    }
-
-    public Node getPropertyPath() {
-        return route;
+        this.name = name;
     }
 
     @SneakyThrows
@@ -66,7 +50,4 @@ public class ConstraintViolation<T> {
         return resultString.toString();
     }
 
-    public Object getFieldValue() {
-        return fieldValue;
-    }
 }

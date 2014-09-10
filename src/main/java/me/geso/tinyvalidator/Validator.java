@@ -29,15 +29,15 @@ public class Validator {
      * @param bean
      * @return return violations.
      */
-    public <T> List<ConstraintViolation<T>> validate(T bean) {
-        ValidationContext<T> context = new ValidationContext<>(bean);
+    public <T> List<ConstraintViolation> validate(T bean) {
+        ValidationContext context = new ValidationContext();
         Node node = new Node();
         this.doValidate(bean, context, node);
         return context.getViolations();
     }
 
     private <T> void doValidate(Object target,
-                                ValidationContext<T> context,
+                                ValidationContext context,
                                 Node node) {
         if (logger.isDebugEnabled()) {
             logger.debug(
@@ -50,8 +50,8 @@ public class Validator {
         for (PropertyAccessor accessor : accessors) {
             if (logger.isDebugEnabled()) {
                 logger.debug(
-                        "Checking root: {}, target: {} descriptor: {}",
-                        context.getRootObject(), target.getClass(),
+                        "Checking target: {} descriptor: {}",
+                        target.getClass(),
                         accessor.getName());
             }
 
@@ -88,7 +88,7 @@ public class Validator {
 
     @SneakyThrows
     private <T> void validateField(Object target,
-                                   ValidationContext<T> context,
+                                   ValidationContext context,
                                    PropertyAccessor accessor,
                                    Node node) {
         String name = accessor.getName();
@@ -96,36 +96,23 @@ public class Validator {
 
         Optional<NotNull> notNullAnnotation = accessor.getNotNullAnnotation();
         if (logger.isDebugEnabled()) {
-            logger.debug("{}.{}'s notNullAnnotation: {}", context.getRoute(),
+            logger.debug("{}.{}'s notNullAnnotation: {}", node.toString(),
                     accessor.getName(), notNullAnnotation);
         }
         if (fieldValue == null) {
             if (notNullAnnotation.isPresent()) {
-                logger.debug("{} is null", context.getRoute());
-                context.addViolation(
-                        notNullAnnotation.get(),
-                        fieldValue,
-                        node.child(name)
-                );
+                logger.debug("{} is null", node.toString());
+                final ConstraintViolation constraintViolation = new ConstraintViolation(fieldValue, notNullAnnotation.get(), node.child(name).toString());
+                context.addViolation(constraintViolation);
             }
             return;
         }
 
         for (Annotation annotation : accessor.getAnnotations()) {
-            final Constraint constraint = annotation.annotationType().getAnnotation(Constraint.class);
-            if (constraint == null) {
-                logger.debug(
-                        "{} doesn't have a @Constraint annotation: {}",
-                        annotation.annotationType(), annotation.annotationType().getAnnotations()
-                );
-                continue;
-            }
-            if (!this.validateByAnnotation(constraint, annotation, fieldValue)) {
-                context.addViolation(
-                        annotation,
-                        fieldValue,
-                        node.child(name)
-                );
+            final Optional<ConstraintViolation> constraintViolationOptional
+                    = this.validateByAnnotation(annotation, node.child(name).toString(), fieldValue);
+            if (constraintViolationOptional.isPresent()) {
+                context.addViolation(constraintViolationOptional.get());
             }
         }
 
@@ -140,17 +127,26 @@ public class Validator {
     /**
      * Validate value by annotation.
      *
-     * @param constraint
      * @param annotation
      * @param value
      * @return
      */
     @SneakyThrows
-    public boolean validateByAnnotation(Constraint constraint,
-                                        Annotation annotation,
-                                        Object value) {
+    public <T> Optional<ConstraintViolation> validateByAnnotation(
+            Annotation annotation,
+            String name,
+            T value) {
+        final Constraint constraint = annotation.annotationType().getAnnotation(Constraint.class);
+        if (constraint == null) {
+            logger.debug("{} doesn't have a @Constraint annotation.", annotation);
+            return Optional.empty();
+        }
         final Class<? extends ConstraintValidator> constraintValidatorClass = constraint.validatedBy();
         final ConstraintValidator constraintValidator = constraintValidatorClass.newInstance();
-        return constraintValidator.isValid(annotation, value);
+        if (constraintValidator.isValid(annotation, value)) {
+            return Optional.empty();
+        } else {
+            return Optional.of(new ConstraintViolation(value, annotation, name));
+        }
     }
 }

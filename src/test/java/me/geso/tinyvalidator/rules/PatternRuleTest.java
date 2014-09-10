@@ -19,7 +19,7 @@ public class PatternRuleTest {
 		Foo foo = new Foo();
 		foo.setBar("5963");
 		Validator validator = new Validator();
-		List<ConstraintViolation<Foo>> violations = validator.validate(foo);
+		List<ConstraintViolation> violations = validator.validate(foo);
 		assertTrue(violations.isEmpty());
 	}
 
@@ -28,10 +28,10 @@ public class PatternRuleTest {
 		Foo foo = new Foo();
 		foo.setBar("hoge");
 		Validator validator = new Validator();
-		List<ConstraintViolation<Foo>> violations = validator.validate(foo);
+		List<ConstraintViolation> violations = validator.validate(foo);
 		assertFalse(violations.isEmpty());
 		String msg = violations.stream()
-				.map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
+				.map(violation -> violation.getName() + " " + violation.getMessage())
 				.collect(Collectors.joining(":::"));
 		assertEquals("bar must match \\A[0-9]+\\z", msg);
 	}

@@ -21,7 +21,7 @@ public class ValidatorTestWithLombok {
         foo.setBar("hoge");
         foo.setBaz(5);
         Validator validator = new Validator();
-        List<ConstraintViolation<Foo>> violations = validator.validate(foo);
+        List<ConstraintViolation> violations = validator.validate(foo);
         assertTrue(violations.isEmpty());
     }
 
@@ -31,10 +31,10 @@ public class ValidatorTestWithLombok {
         foo.setBar(null);
         foo.setBaz(5);
         Validator validator = new Validator();
-        List<ConstraintViolation<Foo>> violations = validator.validate(foo);
+        List<ConstraintViolation> violations = validator.validate(foo);
         assertFalse(violations.isEmpty());
         String msg = violations.stream()
-                .map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
+                .map(violation -> violation.getName() + " " + violation.getMessage())
                 .collect(Collectors.joining(":::"));
         assertEquals("bar may not be null.", msg);
     }
@@ -46,10 +46,10 @@ public class ValidatorTestWithLombok {
 
         Foo foo = new Foo();
         Validator validator = new Validator();
-        List<ConstraintViolation<Foo>> violations = validator.validate(foo);
+        List<ConstraintViolation> violations = validator.validate(foo);
         assertFalse(violations.isEmpty());
         String msg = violations.stream()
-                .map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
+                .map(violation -> violation.getName() + " " + violation.getMessage())
                 .collect(Collectors.joining(":::"));
         assertEquals("bar may not be null.:::baz may not be null.", msg);
     }

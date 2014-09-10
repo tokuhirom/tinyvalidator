@@ -17,7 +17,7 @@ public class ValidatorTest {
 		foo.setBar("hoge");
 		foo.setBaz(5);
 		Validator validator = new Validator();
-		List<ConstraintViolation<Foo>> violations = validator.validate(foo);
+		List<ConstraintViolation> violations = validator.validate(foo);
 		assertTrue(violations.isEmpty());
 	}
 
@@ -27,11 +27,11 @@ public class ValidatorTest {
 		foo.setBar(null);
 		foo.setBaz(5);
 		Validator validator = new Validator();
-		List<ConstraintViolation<Foo>> violations = validator.validate(foo);
+		List<ConstraintViolation> violations = validator.validate(foo);
 		assertFalse(violations.isEmpty());
 		assertEquals(1, violations.size());
 		String msg = violations.stream()
-				.map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
+				.map(violation -> violation.getName() + " " + violation.getMessage())
 				.collect(Collectors.joining(":::"));
 		assertEquals("bar may not be null.", msg);
 	}
@@ -40,10 +40,10 @@ public class ValidatorTest {
 	public void testFail2Params() {
 		Foo foo = new Foo();
 		Validator validator = new Validator();
-		List<ConstraintViolation<Foo>> violations = validator.validate(foo);
+		List<ConstraintViolation> violations = validator.validate(foo);
 		assertFalse(violations.isEmpty());
 		String msg = violations.stream()
-				.map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
+				.map(violation -> violation.getName() + " " + violation.getMessage())
 				.collect(Collectors.joining(":::"));
 		assertEquals("bar may not be null.:::baz may not be null.", msg);
 	}
