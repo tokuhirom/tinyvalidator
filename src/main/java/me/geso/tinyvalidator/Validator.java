@@ -74,13 +74,9 @@ public class Validator {
         if (accessors == null) {
             List<PropertyAccessor> accessorList = new ArrayList<>();
             try {
-                BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
+                BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass(), Object.class);
                 for (PropertyDescriptor descriptor : beanInfo
                         .getPropertyDescriptors()) {
-                    if ("class".equals(descriptor.getName())
-                            || "classLoader".equals(descriptor.getName())) {
-                        continue;
-                    }
                     PropertyAccessor accessor = new PropertyAccessor(bean,
                             descriptor);
                     if (accessor.getAnnotations().size() > 0) {
