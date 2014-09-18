@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.geso</groupId>
 	<artifactId>tinyvalidator</artifactId>
-	<version>0.3.2-SNAPSHOT</version>
+	<version>0.3.3-SNAPSHOT</version>
 	<name>tinyvalidator</name>
 	<description>Tiny validator library for Java 8</description>
 
@@ -63,24 +63,24 @@
 			<version>1.7.7</version>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>commons-validator</groupId>
-            <artifactId>commons-validator</artifactId>
-            <version>1.4.0</version>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+				<version>3.1</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
 					<encoding>UTF-8</encoding>
-          <compilerArgument>-parameters</compilerArgument>
+					<compilerArgument>-parameters</compilerArgument>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -96,4 +96,14 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>3.0.0</version>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
