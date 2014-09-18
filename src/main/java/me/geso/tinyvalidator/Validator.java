@@ -77,6 +77,10 @@ public class Validator {
                 BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass(), Object.class);
                 for (PropertyDescriptor descriptor : beanInfo
                         .getPropertyDescriptors()) {
+                	if (descriptor.getReadMethod() == null) {
+                		continue; // ignore property that doesn't have a getter method.
+                	}
+
                     PropertyAccessor accessor = new PropertyAccessor(bean,
                             descriptor);
                     if (accessor.getAnnotations().size() > 0) {
