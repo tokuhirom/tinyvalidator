@@ -3,6 +3,10 @@ package me.geso.tinyvalidator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * You can throw this exception if you found a constraint violation.<br>
+ * tinyvalidator never throw this exception. *You* can throw this.
+ */
 public class ConstraintViolationException extends Exception {
 	private static final long serialVersionUID = 1L;
 
