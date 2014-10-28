@@ -4,15 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.geso</groupId>
 	<artifactId>tinyvalidator</artifactId>
-	<version>0.4.1-SNAPSHOT</version>
+	<version>0.5.1-SNAPSHOT</version>
 	<name>tinyvalidator</name>
 	<description>Tiny validator library for Java 8</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<maven.compiler.source>1.8</maven.compiler.source>
 	</properties>
 
 	<distributionManagement>
