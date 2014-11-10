@@ -93,6 +93,15 @@ I want to use tiny and thin validation library.
 
 I know JSR 303. Ofcource. But I need really *tiny* and *thin* library.
 
+## Install from maven
+
+This package is available on Maven central.
+http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22tinyvalidator%22
+
+## Documents
+
+javadoc is available on [javadoc.io](javadoc.io/doc/me.geso/tinyvalidator/)
+
 ## AUTHOR
 
 Tokuhiro Matsuno <tokuhirom@gmail.com>
