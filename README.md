@@ -93,6 +93,10 @@ I want to use tiny and thin validation library.
 
 I know JSR 303. Ofcource. But I need really *tiny* and *thin* library.
 
+## Documents
+
+javadoc is available on [javadoc.io](javadoc.io/doc/me.geso/tinyvalidator/)
+
 ## AUTHOR
 
 Tokuhiro Matsuno <tokuhirom@gmail.com>
