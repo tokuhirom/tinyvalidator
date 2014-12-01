@@ -47,7 +47,7 @@ min's default value is 0, max's default value is `Integer.MAX_VALUE`.
 
     @Data
     public static class Foo {
-      @Pattern(regexp="\\A[0-9]+\z")
+      @Pattern(regexp="\\A[0-9]+\\z")
       private String bar;
     }
 
