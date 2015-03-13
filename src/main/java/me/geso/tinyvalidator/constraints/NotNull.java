@@ -1,8 +1,12 @@
 package me.geso.tinyvalidator.constraints;
 
-import me.geso.tinyvalidator.ConstraintValidator;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.lang.annotation.*;
+import me.geso.tinyvalidator.ConstraintValidator;
 
 /**
  * The annotated element must not be null. Accepts any type.
@@ -10,12 +14,12 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
 public @interface NotNull {
-    String message() default "may not be null.";
+	String message() default "may not be null.";
 
-    public static class Validator implements ConstraintValidator {
-        @Override
-        public boolean isValid(Annotation annotation, Object value) {
-            return value != null;
-        }
-    }
+	public static class Validator implements ConstraintValidator {
+		@Override
+		public boolean isValid(Annotation annotation, Object value) {
+			return value != null;
+		}
+	}
 }

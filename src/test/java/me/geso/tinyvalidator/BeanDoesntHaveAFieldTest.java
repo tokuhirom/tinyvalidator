@@ -4,16 +4,16 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.stream.Collectors;
 
-import me.geso.tinyvalidator.constraints.NotNull;
-
 import org.junit.Test;
+
+import me.geso.tinyvalidator.constraints.NotNull;
 
 public class BeanDoesntHaveAFieldTest {
 	@Test
 	public void testFoo() {
 		String msg = new Validator().validate(new Foo()).stream()
-				.map(it -> it.getName() + " " + it.getMessage())
-				.collect(Collectors.joining(","));
+			.map(it -> it.getName() + " " + it.getMessage())
+			.collect(Collectors.joining(","));
 		assertEquals("bar may not be null.", msg);
 	}
 

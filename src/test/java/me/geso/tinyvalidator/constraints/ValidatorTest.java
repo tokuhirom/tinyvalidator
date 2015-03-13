@@ -1,9 +1,9 @@
 package me.geso.tinyvalidator.constraints;
 
-import org.junit.Test;
-
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
+
+import org.junit.Test;
 
 public class ValidatorTest {
 	private final HttpUrl.Validator validator = new HttpUrl.Validator();

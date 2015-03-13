@@ -1,13 +1,13 @@
 package me.geso.tinyvalidator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.Test;
+
 import lombok.Value;
 import me.geso.tinyvalidator.constraints.NotNull;
-
-import org.junit.Test;
 
 public class ConstraintViolationExceptionTest {
 
@@ -18,7 +18,7 @@ public class ConstraintViolationExceptionTest {
 		ConstraintViolationException constraintViolationException = new ConstraintViolationException(violations);
 		assertEquals("x may not be null.", constraintViolationException.getMessage());
 	}
-	
+
 	@Value
 	public static class Foo {
 		@NotNull

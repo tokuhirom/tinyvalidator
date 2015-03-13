@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.junit.Test;
+
 import lombok.Data;
 import me.geso.tinyvalidator.constraints.NotNull;
-
-import org.junit.Test;
 
 public class MapTest {
 
@@ -41,10 +41,10 @@ public class MapTest {
 		List<ConstraintViolation> violations = validator.validate(foo);
 		assertFalse(violations.isEmpty());
 		String msg = violations
-				.stream()
-				.map(violation -> violation.getName() + " "
-						+ violation.getMessage())
-				.collect(Collectors.joining(":::"));
+			.stream()
+			.map(violation -> violation.getName() + " "
+				+ violation.getMessage())
+			.collect(Collectors.joining(":::"));
 		assertEquals("bar.hoge.baz may not be null.", msg);
 	}
 

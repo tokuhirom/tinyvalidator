@@ -6,11 +6,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Test;
+
 import lombok.Data;
 import lombok.ToString;
 import me.geso.tinyvalidator.constraints.NotNull;
-
-import org.junit.Test;
 
 public class NestedTest {
 

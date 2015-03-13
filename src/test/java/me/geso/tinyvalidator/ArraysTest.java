@@ -7,10 +7,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.Test;
+
 import lombok.Data;
 import me.geso.tinyvalidator.constraints.NotNull;
-
-import org.junit.Test;
 
 public class ArraysTest {
 
@@ -19,7 +19,7 @@ public class ArraysTest {
 		Bar bar = new Bar();
 		bar.setBaz("hoge");
 		Foo foo = new Foo();
-		foo.setBar(new Bar[] { bar });
+		foo.setBar(new Bar[]{bar});
 		Validator validator = new Validator();
 		List<ConstraintViolation> violations = validator.validate(foo);
 		assertTrue(violations.isEmpty());
@@ -29,16 +29,16 @@ public class ArraysTest {
 	public void testFail() {
 		Bar bar = new Bar();
 		Foo foo = new Foo();
-		foo.setBar(new Bar[] { bar });
+		foo.setBar(new Bar[]{bar});
 
 		Validator validator = new Validator();
 		List<ConstraintViolation> violations = validator.validate(foo);
 		assertFalse(violations.isEmpty());
 		String msg = violations
-				.stream()
-				.map(violation -> violation.getName() + " "
-						+ violation.getMessage())
-				.collect(Collectors.joining(":::"));
+			.stream()
+			.map(violation -> violation.getName() + " "
+				+ violation.getMessage())
+			.collect(Collectors.joining(":::"));
 		assertEquals("bar.0.baz may not be null.", msg);
 	}
 

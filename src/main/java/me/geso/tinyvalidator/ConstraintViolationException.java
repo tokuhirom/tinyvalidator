@@ -14,8 +14,8 @@ public class ConstraintViolationException extends Exception {
 
 	public ConstraintViolationException(final List<ConstraintViolation> violations) {
 		super(violations.stream()
-				.map(it -> it.getName() + " " + it.getMessage())
-				.collect(Collectors.joining("\n")));
+			.map(it -> it.getName() + " " + it.getMessage())
+			.collect(Collectors.joining("\n")));
 
 		this.violations = violations;
 	}

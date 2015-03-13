@@ -1,16 +1,18 @@
 package me.geso.tinyvalidator.rules;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Data;
-import me.geso.tinyvalidator.Validator;
-import me.geso.tinyvalidator.ConstraintViolation;
-import me.geso.tinyvalidator.constraints.Pattern;
-
 import org.junit.Test;
+
+import lombok.Data;
+import me.geso.tinyvalidator.ConstraintViolation;
+import me.geso.tinyvalidator.Validator;
+import me.geso.tinyvalidator.constraints.Pattern;
 
 public class PatternRuleTest {
 
@@ -31,8 +33,8 @@ public class PatternRuleTest {
 		List<ConstraintViolation> violations = validator.validate(foo);
 		assertFalse(violations.isEmpty());
 		String msg = violations.stream()
-				.map(violation -> violation.getName() + " " + violation.getMessage())
-				.collect(Collectors.joining(":::"));
+			.map(violation -> violation.getName() + " " + violation.getMessage())
+			.collect(Collectors.joining(":::"));
 		assertEquals("bar must match \\A[0-9]+\\z", msg);
 	}
 

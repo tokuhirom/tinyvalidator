@@ -8,8 +8,8 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Constraint {
-    /**
-     * Reference for constraint validator implementation.
-     */
-    public Class<? extends ConstraintValidator> validatedBy();
+	/**
+	 * Reference for constraint validator implementation.
+	 */
+	public Class<? extends ConstraintValidator> validatedBy();
 }
