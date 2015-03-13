@@ -1,17 +1,23 @@
 package me.geso.tinyvalidator;
 
-import lombok.SneakyThrows;
-import me.geso.tinyvalidator.constraints.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import lombok.SneakyThrows;
+import me.geso.tinyvalidator.constraints.NotNull;
 
 /**
  * The validator class.
@@ -44,12 +50,12 @@ public class Validator {
 			Node node) {
 		if (logger.isDebugEnabled()) {
 			logger.debug(
-					"Checking {}", value.getClass());
+				"Checking {}", value.getClass());
 		}
 		if (value.getClass().isPrimitive()) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(
-						"{} is a primitive type.", value.getClass());
+					"{} is a primitive type.", value.getClass());
 			}
 			return;
 		}
@@ -60,9 +66,9 @@ public class Validator {
 		for (PropertyAccessor accessor : accessors) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(
-						"Checking target: {} descriptor: {}",
-						value.getClass(),
-						accessor.getName());
+					"Checking target: {} descriptor: {}",
+					value.getClass(),
+					accessor.getName());
 			}
 
 			this.validateField(value, context, accessor, node);
@@ -70,21 +76,26 @@ public class Validator {
 	}
 
 	private PropertyAccessor[] getAccessors(Object bean) {
-		PropertyAccessor[] accessors = accessorCache.get(bean.getClass());
-		if (accessors == null) {
+		return accessorCache.computeIfAbsent(bean.getClass(), klass -> {
+			// cache miss.
 			List<PropertyAccessor> accessorList = new ArrayList<>();
 			try {
-				BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass(),
-						Object.class);
-				for (PropertyDescriptor descriptor : beanInfo
-						.getPropertyDescriptors()) {
+				BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass(), Object.class);
+				final PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+				if (logger.isDebugEnabled()) {
+					logger.debug("Property descriptors: {}", Arrays.toString(propertyDescriptors));
+				}
+				for (PropertyDescriptor descriptor : propertyDescriptors) {
 					if (descriptor.getReadMethod() == null) {
+						if (logger.isDebugEnabled()) {
+							logger.debug("There is no read method: {}", descriptor.getName());
+						}
 						continue; // ignore property that doesn't have a getter
-									// method.
+						// method.
 					}
 
 					PropertyAccessor accessor = new PropertyAccessor(bean,
-							descriptor);
+						descriptor);
 					if (accessor.getAnnotations().size() > 0) {
 						accessorList.add(accessor);
 					}
@@ -92,10 +103,8 @@ public class Validator {
 			} catch (IntrospectionException e) {
 				throw new RuntimeException(e);
 			}
-			accessors = accessorList.stream().toArray(PropertyAccessor[]::new);
-			accessorCache.put(bean.getClass(), accessors);
-		}
-		return accessors;
+			return accessorList.stream().toArray(PropertyAccessor[]::new);
+		});
 	}
 
 	@SneakyThrows
@@ -109,14 +118,14 @@ public class Validator {
 		Optional<NotNull> notNullAnnotation = accessor.getNotNullAnnotation();
 		if (logger.isDebugEnabled()) {
 			logger.debug("{}.{}'s notNullAnnotation: {}", node.toString(),
-					accessor.getName(), notNullAnnotation);
+				accessor.getName(), notNullAnnotation);
 		}
 		if (fieldValue == null) {
 			if (notNullAnnotation.isPresent()) {
 				logger.debug("{} is null", node.toString());
 				final ConstraintViolation constraintViolation = new ConstraintViolation(
-						fieldValue, notNullAnnotation.get(), node.child(name)
-								.toString()
+					fieldValue, notNullAnnotation.get(), node.child(name)
+						.toString()
 						);
 				context.addViolation(constraintViolation);
 			}
@@ -125,8 +134,8 @@ public class Validator {
 
 		for (Annotation annotation : accessor.getAnnotations()) {
 			final Optional<ConstraintViolation> constraintViolationOptional = this
-					.validateByAnnotation(annotation, node.child(name)
-							.toString(), fieldValue);
+				.validateByAnnotation(annotation, node.child(name)
+					.toString(), fieldValue);
 			if (constraintViolationOptional.isPresent()) {
 				context.addViolation(constraintViolationOptional.get());
 			}
@@ -137,31 +146,31 @@ public class Validator {
 			if (!context.isSeen(fieldValue)) {
 				if (fieldValue instanceof Collection) {
 					int i = 0;
-					for (Object item : (Collection<?>) fieldValue) {
+					for (Object item : (Collection<?>)fieldValue) {
 						this.doValidate(item, context,
-								node.child(name).child("" + i));
+							node.child(name).child("" + i));
 						++i;
 					}
 				} else if (fieldValue instanceof Map) {
 					// Validate keys
-					for (Object key : ((Map<?, ?>) fieldValue).keySet()) {
+					for (Object key : ((Map<?, ?>)fieldValue).keySet()) {
 						if (!key.getClass().isPrimitive()) {
 							this.doValidate(key, context,
-									node.child(name).child("key"));
+								node.child(name).child("key"));
 						}
 					}
 					// Validate values
-					for (Object key : ((Map<?, ?>) fieldValue).keySet()) {
-						Object value = ((Map<?, ?>) fieldValue).get(key);
+					for (Object key : ((Map<?, ?>)fieldValue).keySet()) {
+						Object value = ((Map<?, ?>)fieldValue).get(key);
 						this.doValidate(value, context,
-								node.child(name).child(key.toString()));
+							node.child(name).child(key.toString()));
 					}
 				} else if (fieldValue.getClass().isArray()) {
-					Object[] array = (Object[]) fieldValue;
+					Object[] array = (Object[])fieldValue;
 					int i = 0;
 					for (Object item : array) {
 						this.doValidate(item, context,
-								node.child(name).child("" + i));
+							node.child(name).child("" + i));
 						++i;
 					}
 				} else {
@@ -184,21 +193,21 @@ public class Validator {
 			String name,
 			T value) {
 		final Constraint constraint = annotation.annotationType()
-				.getAnnotation(Constraint.class);
+			.getAnnotation(Constraint.class);
 		if (constraint == null) {
 			logger.debug("{} doesn't have a @Constraint annotation.",
-					annotation);
+				annotation);
 			return Optional.empty();
 		}
 		final Class<? extends ConstraintValidator> constraintValidatorClass = constraint
-				.validatedBy();
+			.validatedBy();
 		final ConstraintValidator constraintValidator = constraintValidatorClass
-				.newInstance();
+			.newInstance();
 		if (constraintValidator.isValid(annotation, value)) {
 			return Optional.empty();
 		} else {
 			return Optional
-					.of(new ConstraintViolation(value, annotation, name));
+				.of(new ConstraintViolation(value, annotation, name));
 		}
 	}
 }
