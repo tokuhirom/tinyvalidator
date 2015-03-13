@@ -1,13 +1,17 @@
 package me.geso.tinyvalidator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import me.geso.tinyvalidator.constraints.NotNull;
-
 import org.junit.Test;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import me.geso.tinyvalidator.constraints.NotNull;
 
 public class ValidatorTest {
 
@@ -70,6 +74,31 @@ public class ValidatorTest {
 		public void setBaz(Integer baz) {
 			this.baz = baz;
 		}
+	}
+
+	// inheritance test.
+
+	@Data
+	public static class Parent {
+		@NotNull
+		private String elem;
+	}
+
+	@EqualsAndHashCode(callSuper = false)
+	@Data
+	public static class Child extends Parent {
+	}
+
+	@Test
+	public void testInheritance() {
+		final Child child = new Child();
+		Validator validator = new Validator();
+		List<ConstraintViolation> violations = validator.validate(child);
+		assertFalse(violations.isEmpty());
+		String msg = violations.stream()
+			.map(violation -> violation.getName() + " " + violation.getMessage())
+			.collect(Collectors.joining(":::"));
+		assertEquals("elem may not be null.", msg);
 	}
 
 }
