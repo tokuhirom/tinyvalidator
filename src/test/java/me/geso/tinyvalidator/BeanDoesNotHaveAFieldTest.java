@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import me.geso.tinyvalidator.constraints.NotNull;
 
-public class BeanDoesntHaveAFieldTest {
+public class BeanDoesNotHaveAFieldTest {
 	@Test
 	public void testFoo() {
 		String msg = new Validator().validate(new Foo()).stream()
@@ -17,7 +17,9 @@ public class BeanDoesntHaveAFieldTest {
 		assertEquals("bar may not be null.", msg);
 	}
 
+	@SuppressWarnings("UnusedDeclaration")
 	public static class Foo {
+		@SuppressWarnings("SameReturnValue")
 		@NotNull
 		public String getBar() {
 			return null;

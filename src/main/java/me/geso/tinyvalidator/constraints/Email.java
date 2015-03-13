@@ -18,7 +18,7 @@ import me.geso.tinyvalidator.ConstraintValidator;
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Constraint(validatedBy = Email.Validator.class)
 public @interface Email {
-	public String message() default "must be valid E-mail addresss";
+	public String message() default "must be valid E-mail address";
 
 	public static class Validator implements ConstraintValidator {
 		@Override

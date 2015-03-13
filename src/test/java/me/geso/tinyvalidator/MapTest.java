@@ -21,7 +21,7 @@ public class MapTest {
 		Bar bar = new Bar();
 		Foo foo = new Foo();
 		bar.setBaz("hoge");
-		Map<String, Bar> map = new HashMap<String, Bar>();
+		Map<String, Bar> map = new HashMap<>();
 		map.put("hoge", bar);
 		foo.setBar(map);
 		Validator validator = new Validator();
@@ -33,7 +33,7 @@ public class MapTest {
 	public void testFail() {
 		Bar bar = new Bar();
 		Foo foo = new Foo();
-		Map<String, Bar> map = new HashMap<String, Bar>();
+		Map<String, Bar> map = new HashMap<>();
 		map.put("hoge", bar);
 		foo.setBar(map);
 

@@ -11,18 +11,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import lombok.Data;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import me.geso.tinyvalidator.ConstraintViolation;
 import me.geso.tinyvalidator.Validator;
 import me.geso.tinyvalidator.constraints.Size;
 
+@Slf4j
 public class SizeConstraintValidatorTest {
-	private static Logger logger = LoggerFactory.getLogger(SizeConstraintValidatorTest.class);
-
 	@Test
 	public void testTrueString() {
 		StringFoo stringFoo = new StringFoo();
@@ -42,7 +40,7 @@ public class SizeConstraintValidatorTest {
 	@Test
 	public void testFalseString() {
 		System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "default");
-		logger.info("HHA");
+		log.info("HHA");
 
 		StringFoo stringFoo = new StringFoo();
 		stringFoo.setBar("hogeeeee");

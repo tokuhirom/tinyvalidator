@@ -8,15 +8,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import me.geso.tinyvalidator.constraints.NotNull;
 
+@Slf4j
 public class ValidatorTestWithLombok {
-	private static Logger logger = LoggerFactory
-		.getLogger(ValidatorTestWithLombok.class);
 
 	@Test
 	public void testSuccess() {
@@ -45,7 +43,7 @@ public class ValidatorTestWithLombok {
 	@Test
 	public void testFail2Params() {
 		System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "default");
-		logger.info("HOGE");
+		log.info("HOGE");
 
 		Foo foo = new Foo();
 		Validator validator = new Validator();

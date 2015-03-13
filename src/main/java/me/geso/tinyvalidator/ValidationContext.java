@@ -6,9 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by tokuhirom on 9/10/14.
- */
 class ValidationContext {
 	private final List<ConstraintViolation> violations = new ArrayList<>();
 	private final Set<Object> seen = new HashSet<>();

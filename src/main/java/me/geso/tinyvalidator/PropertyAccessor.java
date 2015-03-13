@@ -33,9 +33,7 @@ class PropertyAccessor {
 		try {
 			Field field = getDeclaredField(bean, descriptor);
 			if (field != null) {
-				for (Annotation annotation : field.getAnnotations()) {
-					annotations.add(annotation);
-				}
+				Collections.addAll(annotations, field.getAnnotations());
 			}
 		} catch (NoSuchFieldException e) {
 			// do nothing.
@@ -44,9 +42,7 @@ class PropertyAccessor {
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		}
-		for (Annotation annotation : readMethod.getAnnotations()) {
-			annotations.add(annotation);
-		}
+		Collections.addAll(annotations, readMethod.getAnnotations());
 		this.annotations = Collections.unmodifiableList(annotations);
 		this.notNullAnnotation = this.buildNotNullAnnotation(annotations);
 		this.validAnnotation = PropertyAccessor.findValidAnnotations(annotations);

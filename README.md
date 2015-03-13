@@ -51,7 +51,7 @@ min's default value is 0, max's default value is `Integer.MAX_VALUE`.
       private String bar;
     }
 
-`bar` should match the regular rexpression.
+`bar` should match the regular expression.
 
 ### `@HttpUrl`
 
@@ -91,7 +91,7 @@ If you are using slf4j-simple, please try following VM options.
 
 I want to use tiny and thin validation library.
 
-I know JSR 303. Ofcource. But I need really *tiny* and *thin* library.
+I know JSR 303. Of course. But I need really *tiny* and *thin* library.
 
 ## Install from maven
 

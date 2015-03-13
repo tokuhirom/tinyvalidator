@@ -13,18 +13,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import me.geso.tinyvalidator.constraints.NotNull;
 
 /**
  * The validator class.
  */
+@Slf4j
 public class Validator {
-	private static Logger logger = LoggerFactory.getLogger(Validator.class);
-	private static Map<Class<?>, PropertyAccessor[]> accessorCache = new ConcurrentHashMap<>();
+	private static final Map<Class<?>, PropertyAccessor[]> accessorCache = new ConcurrentHashMap<>();
 
 	/**
 	 * Create new validator instance.
@@ -35,7 +33,7 @@ public class Validator {
 	/**
 	 * Validate bean.
 	 *
-	 * @param bean
+	 * @param bean target bean object
 	 * @return return violations.
 	 */
 	public <T> List<ConstraintViolation> validate(T bean) {
@@ -48,13 +46,13 @@ public class Validator {
 	private <T> void doValidate(Object value,
 			ValidationContext context,
 			Node node) {
-		if (logger.isDebugEnabled()) {
-			logger.debug(
+		if (log.isDebugEnabled()) {
+			log.debug(
 				"Checking {}", value.getClass());
 		}
 		if (value.getClass().isPrimitive()) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(
+			if (log.isDebugEnabled()) {
+				log.debug(
 					"{} is a primitive type.", value.getClass());
 			}
 			return;
@@ -64,8 +62,8 @@ public class Validator {
 
 		PropertyAccessor[] accessors = this.getAccessors(value);
 		for (PropertyAccessor accessor : accessors) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(
+			if (log.isDebugEnabled()) {
+				log.debug(
 					"Checking target: {} descriptor: {}",
 					value.getClass(),
 					accessor.getName());
@@ -82,13 +80,13 @@ public class Validator {
 			try {
 				BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass(), Object.class);
 				final PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-				if (logger.isDebugEnabled()) {
-					logger.debug("Property descriptors: {}", Arrays.toString(propertyDescriptors));
+				if (log.isDebugEnabled()) {
+					log.debug("Property descriptors: {}", Arrays.toString(propertyDescriptors));
 				}
 				for (PropertyDescriptor descriptor : propertyDescriptors) {
 					if (descriptor.getReadMethod() == null) {
-						if (logger.isDebugEnabled()) {
-							logger.debug("There is no read method: {}", descriptor.getName());
+						if (log.isDebugEnabled()) {
+							log.debug("There is no read method: {}", descriptor.getName());
 						}
 						continue; // ignore property that doesn't have a getter
 						// method.
@@ -116,13 +114,13 @@ public class Validator {
 		Object fieldValue = accessor.get(target);
 
 		Optional<NotNull> notNullAnnotation = accessor.getNotNullAnnotation();
-		if (logger.isDebugEnabled()) {
-			logger.debug("{}.{}'s notNullAnnotation: {}", node.toString(),
+		if (log.isDebugEnabled()) {
+			log.debug("{}.{}'s notNullAnnotation: {}", node.toString(),
 				accessor.getName(), notNullAnnotation);
 		}
 		if (fieldValue == null) {
 			if (notNullAnnotation.isPresent()) {
-				logger.debug("{} is null", node.toString());
+				log.debug("{} is null", node.toString());
 				final ConstraintViolation constraintViolation = new ConstraintViolation(
 					fieldValue, notNullAnnotation.get(), node.child(name)
 						.toString()
@@ -183,8 +181,8 @@ public class Validator {
 	/**
 	 * Validate value by annotation.
 	 *
-	 * @param annotation
-	 * @param value
+	 * @param annotation target annotation
+	 * @param value target value
 	 * @return Validation result.
 	 */
 	@SneakyThrows
@@ -195,7 +193,7 @@ public class Validator {
 		final Constraint constraint = annotation.annotationType()
 			.getAnnotation(Constraint.class);
 		if (constraint == null) {
-			logger.debug("{} doesn't have a @Constraint annotation.",
+			log.debug("{} doesn't have a @Constraint annotation.",
 				annotation);
 			return Optional.empty();
 		}

@@ -5,9 +5,6 @@ import static junit.framework.TestCase.assertTrue;
 
 import org.junit.Test;
 
-/**
- * Created by tokuhirom on 9/10/14.
- */
 public class EmailTest {
 	private final Email.Validator validator = new Email.Validator();
 
