@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.geso</groupId>
 	<artifactId>tinyvalidator</artifactId>
-	<version>0.8.1-SNAPSHOT</version>
+	<version>0.9.0</version>
 	<name>tinyvalidator</name>
 	<description>Tiny validator library for Java 8</description>
 	<url>http://github.com/tokuhirom/tinyvalidator</url>
@@ -34,7 +34,7 @@
 		<url>https://github.com/tokuhirom/tinyvalidator/</url>
 		<connection>scm:git:git://github.com/tokuhirom/tinyvalidator.git</connection>
 		<developerConnection>scm:git:git@github.com:tokuhirom/tinyvalidator.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>tinyvalidator-0.9.0</tag>
 	</scm>
 
 	<distributionManagement>
